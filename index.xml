@@ -6,14 +6,13 @@
     <description>Recent content on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>© Jokernol 2020</copyright>
-    <lastBuildDate>Fri, 16 Apr 2021 11:54:53 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>© Jokernol 2020</copyright><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My First Post</title>
-      <link>https://Jokernol.github.io/posts/my-first-post/</link>
+      <link>https://Jokernol.github.io/my-first-post/</link>
       <pubDate>Fri, 16 Apr 2021 11:54:53 +0800</pubDate>
       
-      <guid>https://Jokernol.github.io/posts/my-first-post/</guid>
+      <guid>https://Jokernol.github.io/my-first-post/</guid>
       <description>arch Installation-guide Begin Verify the boot mode To verify the boot mode, list the efibars directory
 ls /sys/firmware/efi/efivars Connect to the internet For wireless, make sure the wireless card is not blocked with rfkill
 Many laptops have a hardware button (or switch) to turn off wireless card, however, the card can also be blocked by kernel
