@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Blog</title>
-    <link>https://jokernol.github.io/posts/</link>
+    <link>https://Jokernol.github.io/posts/</link>
     <description>Recent content in Posts on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 08 May 2021 14:02:22 +0800</lastBuildDate><atom:link href="https://jokernol.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 08 May 2021 14:02:22 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Arduino内存概述</title>
-      <link>https://jokernol.github.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</link>
+      <link>https://Jokernol.github.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</link>
       <pubDate>Sat, 08 May 2021 14:02:22 +0800</pubDate>
       
-      <guid>https://jokernol.github.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</guid>
+      <guid>https://Jokernol.github.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</guid>
       <description>处理器/内存结构    在电子计算机的早期，出现了两种不同的处理器/内存结构：哈佛结构和冯诺依曼结构。
 冯诺依曼结构    冯·诺依曼结构也称普林斯顿结构，是一种将程序指令存储器和数据存储器合并在一起的存储器结构。程序指令存储地址和数据存储地址指向同一个存储器的不同物理位置，因此程序指令和数据的宽度相同，如英特尔公司的8086中央处理器的程序指令和数据都是16位宽。
 哈佛结构    哈佛结构是一种将程序指令存储和数据存储分开的存储器结构。哈佛结构是一种并行体系结构，它的主要特点是将程序和数据存储在不同的存储空间中，即程序存储器和数据存储器是两个独立的存储器，每个存储器独立编址、独立访问。中央处理器首先到程序指令存储器中读取程序指令内容，解码后得到数据地址，再到相应的数据存储器中读取数据，并进行下一步的操作（通常是执行）。程序指令存储和数据存储分开，可以使指令和数据有不同的数据宽度，如Microchip公司的PIC16芯片的程序指令是14位宽度，而数据是8位宽度。
