@@ -2,23 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://Jokernol.github.io/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</loc>
+    <loc>https://www.github.jokernol.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</loc>
     <lastmod>2021-05-07T11:41:55+08:00</lastmod>
   </url><url>
-    <loc>https://Jokernol.github.io/</loc>
+    <loc>https://www.github.jokernol.io/</loc>
     <lastmod>2021-05-07T11:41:55+08:00</lastmod>
   </url><url>
-    <loc>https://Jokernol.github.io/post/</loc>
+    <loc>https://www.github.jokernol.io/posts/</loc>
     <lastmod>2021-05-07T11:41:55+08:00</lastmod>
   </url><url>
-    <loc>https://Jokernol.github.io/about/</loc>
-    <lastmod>2021-05-07T11:33:44+08:00</lastmod>
-  </url><url>
-    <loc>https://Jokernol.github.io/welcome/</loc>
+    <loc>https://www.github.jokernol.io/posts/welcome/</loc>
     <lastmod>2021-04-16T12:12:50+08:00</lastmod>
   </url><url>
-    <loc>https://Jokernol.github.io/categories/</loc>
+    <loc>https://www.github.jokernol.io/about/</loc>
+    <lastmod>2019-02-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://Jokernol.github.io/tags/</loc>
+    <loc>https://www.github.jokernol.io/authors/</loc>
+  </url><url>
+    <loc>https://www.github.jokernol.io/categories/</loc>
+  </url><url>
+    <loc>https://www.github.jokernol.io/series/</loc>
+  </url><url>
+    <loc>https://www.github.jokernol.io/tags/</loc>
   </url>
 </urlset>

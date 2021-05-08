@@ -2,10 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Blog</title>
-    <link>https://Jokernol.github.io/tags/</link>
+    <link>https://www.github.jokernol.io/tags/</link>
     <description>Recent content in Tags on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    <copyright>© Jokernol 2021</copyright><atom:link href="https://Jokernol.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en</language><atom:link href="https://www.github.jokernol.io/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
