@@ -195,6 +195,7 @@ EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程�
   </a>
 </h4>
 <p>冯·诺依曼结构也称普林斯顿结构，是一种将程序指令存储器和数据存储器合并在一起的存储器结构。程序指令存储地址和数据存储地址指向同一个存储器的不同物理位置，因此程序指令和数据的宽度相同，如英特尔公司的8086中央处理器的程序指令和数据都是16位宽。</p>
+<p><img src="https://i.loli.net/2021/05/09/5sNqurXcfCxzYSG.png" alt="01.png"></p>
 <h4 id="哈佛结构">
   哈佛结构
   <a class="heading-link" href="#%e5%93%88%e4%bd%9b%e7%bb%93%e6%9e%84">
@@ -202,6 +203,7 @@ EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程�
   </a>
 </h4>
 <p>哈佛结构是一种将程序指令存储和数据存储分开的存储器结构。哈佛结构是一种并行体系结构，它的主要特点是将程序和数据存储在不同的存储空间中，即程序存储器和数据存储器是两个独立的存储器，每个存储器独立编址、独立访问。中央处理器首先到程序指令存储器中读取程序指令内容，解码后得到数据地址，再到相应的数据存储器中读取数据，并进行下一步的操作（通常是执行）。程序指令存储和数据存储分开，可以使指令和数据有不同的数据宽度，如Microchip公司的PIC16芯片的程序指令是14位宽度，而数据是8位宽度。</p>
+<p><img src="https://i.loli.net/2021/05/09/KPZWu7ab1L8MH4C.png" alt="02.png"></p>
 <h4 id="优劣">
   优劣
   <a class="heading-link" href="#%e4%bc%98%e5%8a%a3">
@@ -250,6 +252,7 @@ EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程�
 <li>栈(Stack) -栈用于局部变量，并用于维护中断和函数调用的记录。栈从内存顶部开始向下扩展到堆。每个中断，函数调用和局部变量分配都会导致栈增长。而从中断或函数调用返回将回收该中断或函数使用的所有栈空间。</li>
 </ul>
 <p>大部分的内存问题都源于堆栈冲突，当发生冲突时内存将会发生无法预知的损坏。较好的情况下，它会立即崩溃。而在其他情况下，冲突所导致的危害可能要到很久以后才会被注意到。所以我们必须谨慎。</p>
+<p><img src="https://i.loli.net/2021/05/09/JbGISRX4va82HYc.png" alt="03.png"></p>
 <h4 id="eeprom">
   EEPROM
   <a class="heading-link" href="#eeprom">
@@ -264,7 +267,7 @@ EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程�
 <th style="text-align:center">用途</th>
 <th style="text-align:center">容量</th>
 <th style="text-align:center">易失性</th>
-<th style="text-align:left">其他</th>
+<th style="text-align:center">其他</th>
 </tr>
 </thead>
 <tbody>
@@ -273,7 +276,7 @@ EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程�
 <td style="text-align:center">程序，引导程序，只读用户数据</td>
 <td style="text-align:center">32KB(包括.5k用于引导程序)</td>
 <td style="text-align:center">非易失性</td>
-<td style="text-align:left">上传sketch后无法更改用户数据</td>
+<td style="text-align:center">上传sketch后无法更改用户数据</td>
 </tr>
 <tr>
 <td style="text-align:center">SRAM</td>
@@ -286,7 +289,7 @@ EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程�
 <td style="text-align:center">EEPROM</td>
 <td style="text-align:center">用户数据</td>
 <td style="text-align:center">1KB</td>
-<td style="text-align:center">易失性</td>
+<td style="text-align:center">非易失性</td>
 <td></td>
 </tr>
 </tbody>
@@ -338,7 +341,7 @@ double EEPROM_readDouble(int address) {
     <i class="fa fa-link" aria-hidden="true"></i>
   </a>
 </h4>
-<p>SRAM的使用更加动态因此测量起来更为困难。为了准确测量SRAM的使用我们可以采用下方的freeMemory()函数。
+<p>SRAM的使用更加动态因此测量起来更为困难。为了准确测量SRAM的使用我们可以采用下方的<code>freeMemory()</code>函数。<br>
 由于SRAM的使用是动态的并且随着时间而变化，因此我们可以在程序的不同位置调用该函数来观察SRAM的使用情况。</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">#ifdef __arm__
 // should use uinstd.h to define sbrk but Due causes a conflict
@@ -356,16 +359,16 @@ int freeMemory() {
     return __brkval ? &amp;top - __brkval : &amp;top - __malloc_heap_start;
 #endif // __arm__
 }
-</code></pre></div><p>freeMemory()实际返回的是堆和栈之间的空余空间，通过监视空余空间的大小来避免堆栈冲突是十分有效的</p>
+</code></pre></div><p><code>freeMemory()</code>实际返回的是堆和栈之间的空余空间，通过监视空余空间的大小来避免堆栈冲突</p>
 <h3 id="oled">
   OLED
   <a class="heading-link" href="#oled">
     <i class="fa fa-link" aria-hidden="true"></i>
   </a>
 </h3>
-<p>OLED屏的使用需要耗费大量的SRAM空间。
-对于单色OLED显示器，每八个像素需要一个字节。
-128x64需要1KB的SRAM空间。
+<p>OLED屏的使用需要耗费大量的SRAM空间。<br>
+对于单色OLED显示器，每八个像素需要一个字节。<br>
+128x64需要1KB的SRAM空间。<br>
 128x32需要512B的SRAM空间。</p>
 
       </div>
