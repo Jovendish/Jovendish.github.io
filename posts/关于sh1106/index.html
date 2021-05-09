@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="color-scheme" content="light dark">
+
+    
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; block-all-mixed-content; default-src 'self'; child-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net/; form-action 'self'; frame-src 'self'; img-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://cdn.jsdelivr.net/; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; prefetch-src 'self'; connect-src 'self' https://www.google-analytics.com;">
+
+    
+
+    <meta name="author" content="Zhu">
+    <meta name="description" content="似乎SH1106只是SSD1306的一个改版,而就目前网络上的资料而言,SSD1306的使用者似乎更多.
+Adafruit只提供了SSD1306的驱动(Adafruit_SSD1306),而SH1106只有一个基于该库修改的第三方库(Adafruit_SH1106)
+SSD1306和SH1106之间只有一个小差异：SH1106控制器具有132x64像素的内部RAM。SSD1306仅具有128x64像素。
+在具有SH1106控制器的标准128x64 OLED上遇到的第一个问题是：128x64窗口如何映射到132x64RAM?
+在大多数情况下，128x64 OLED居中在132x64区域内，这意味着RAM中的像素（2,0）对应的是显示器上的像素（0,0）。
+对于u8g2，SH1106的改动很小。我们只需要将显示移动2像素即可。
+但使用Adafruit lib则较为复杂.主体函数 Adafruit_SSD1306 :: display（void）在很大程度上取决于硬件体系结构，并假定RAM区域的宽度为128（对于SH1106是错误的）。
+因此若想将其移植到SH1106上则需要完全重写Adafruit_SSD1306 :: display（void）函数。
+此外SSD1306还具有在SH1106上没有的扩展命令（例如滚动命令）。SH1106仅支持页面寻址模式。而SSD1306添加了特殊的水平和垂直寻址模式。
+所以在我们后续的开发过程中，SH1106部分指令的缺失或许会是一个问题">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="关于SH1106"/>
+<meta name="twitter:description" content="似乎SH1106只是SSD1306的一个改版,而就目前网络上的资料而言,SSD1306的使用者似乎更多.
+Adafruit只提供了SSD1306的驱动(Adafruit_SSD1306),而SH1106只有一个基于该库修改的第三方库(Adafruit_SH1106)
+SSD1306和SH1106之间只有一个小差异：SH1106控制器具有132x64像素的内部RAM。SSD1306仅具有128x64像素。
+在具有SH1106控制器的标准128x64 OLED上遇到的第一个问题是：128x64窗口如何映射到132x64RAM?
+在大多数情况下，128x64 OLED居中在132x64区域内，这意味着RAM中的像素（2,0）对应的是显示器上的像素（0,0）。
+对于u8g2，SH1106的改动很小。我们只需要将显示移动2像素即可。
+但使用Adafruit lib则较为复杂.主体函数 Adafruit_SSD1306 :: display（void）在很大程度上取决于硬件体系结构，并假定RAM区域的宽度为128（对于SH1106是错误的）。
+因此若想将其移植到SH1106上则需要完全重写Adafruit_SSD1306 :: display（void）函数。
+此外SSD1306还具有在SH1106上没有的扩展命令（例如滚动命令）。SH1106仅支持页面寻址模式。而SSD1306添加了特殊的水平和垂直寻址模式。
+所以在我们后续的开发过程中，SH1106部分指令的缺失或许会是一个问题"/>
+
+    <meta property="og:title" content="关于SH1106" />
+<meta property="og:description" content="似乎SH1106只是SSD1306的一个改版,而就目前网络上的资料而言,SSD1306的使用者似乎更多.
+Adafruit只提供了SSD1306的驱动(Adafruit_SSD1306),而SH1106只有一个基于该库修改的第三方库(Adafruit_SH1106)
+SSD1306和SH1106之间只有一个小差异：SH1106控制器具有132x64像素的内部RAM。SSD1306仅具有128x64像素。
+在具有SH1106控制器的标准128x64 OLED上遇到的第一个问题是：128x64窗口如何映射到132x64RAM?
+在大多数情况下，128x64 OLED居中在132x64区域内，这意味着RAM中的像素（2,0）对应的是显示器上的像素（0,0）。
+对于u8g2，SH1106的改动很小。我们只需要将显示移动2像素即可。
+但使用Adafruit lib则较为复杂.主体函数 Adafruit_SSD1306 :: display（void）在很大程度上取决于硬件体系结构，并假定RAM区域的宽度为128（对于SH1106是错误的）。
+因此若想将其移植到SH1106上则需要完全重写Adafruit_SSD1306 :: display（void）函数。
+此外SSD1306还具有在SH1106上没有的扩展命令（例如滚动命令）。SH1106仅支持页面寻址模式。而SSD1306添加了特殊的水平和垂直寻址模式。
+所以在我们后续的开发过程中，SH1106部分指令的缺失或许会是一个问题" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://Jokernol.github.io/posts/%E5%85%B3%E4%BA%8Esh1106/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-09T14:19:11&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-09T14:19:11&#43;08:00" />
+
+
+
+    <title>
+  关于SH1106 · Blog
+</title>
+
+    
+      <link rel="canonical" href="https://Jokernol.github.io/posts/%E5%85%B3%E4%BA%8Esh1106/">
+    
+
+    <link rel="preload" href="/fonts/forkawesome-webfont.woff2?v=1.1.7" as="font" type="font/woff2" crossorigin>
+
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.8e23620d1750cfeedee0352c68787c8e99d48d3b2c2d56fa17395cdaf6da25ae.css" integrity="sha256-jiNiDRdQz&#43;7e4DUsaHh8jpnUjTssLVb6Fzlc2vbaJa4=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+      
+        
+        
+        <link rel="stylesheet" href="/css/coder-dark.min.f37febc669ce189201c1918fac1948a254686c8d366a312c2d72b2bb71ad97d1.css" integrity="sha256-83/rxmnOGJIBwZGPrBlIolRobI02ajEsLXKyu3Gtl9E=" crossorigin="anonymous" media="screen" />
+      
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    
+
+    <meta name="generator" content="Hugo 0.83.1" />
+  </head>
+
+  
+  
+    
+  
+  <body class="preload-transitions colorscheme-auto"
+        onload=""
+  >
+    
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      Blog
+    </a>
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://Jokernol.github.io/posts/%E5%85%B3%E4%BA%8Esh1106/">
+              关于SH1106
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <time datetime='2021-05-09T14:19:11&#43;08:00'>
+                May 9, 2021
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa fa-clock-o" aria-hidden="true"></i>
+              One-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <p>似乎SH1106只是SSD1306的一个改版,而就目前网络上的资料而言,SSD1306的使用者似乎更多.</p>
+<p>Adafruit只提供了SSD1306的驱动(Adafruit_SSD1306),而SH1106只有一个基于该库修改的第三方库(Adafruit_SH1106)</p>
+<p>SSD1306和SH1106之间只有一个小差异：SH1106控制器具有132x64像素的内部RAM。SSD1306仅具有128x64像素。</p>
+<p>在具有SH1106控制器的标准128x64 OLED上遇到的第一个问题是：128x64窗口如何映射到132x64RAM?</p>
+<p>在大多数情况下，128x64 OLED居中在132x64区域内，这意味着RAM中的像素（2,0）对应的是显示器上的像素（0,0）。</p>
+<p>对于u8g2，SH1106的改动很小。我们只需要将显示移动2像素即可。</p>
+<p>但使用Adafruit lib则较为复杂.主体函数<code> Adafruit_SSD1306 :: display（void）</code>在很大程度上取决于硬件体系结构，并假定RAM区域的宽度为128（对于SH1106是错误的）。</p>
+<p>因此若想将其移植到SH1106上则需要完全重写<code>Adafruit_SSD1306 :: display（void）</code>函数。</p>
+<p>此外SSD1306还具有在SH1106上没有的扩展命令（例如滚动命令）。SH1106仅支持页面寻址模式。而SSD1306添加了特殊的水平和垂直寻址模式。</p>
+<p>所以在我们后续的开发过程中，SH1106部分指令的缺失或许会是一个问题</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      
+
+    </main>
+
+    
+      
+      <script src="/js/coder.min.235666b114443867d43eeb5799d51f6252965e5163f338285e113fa381d3d27e.js" integrity="sha256-I1ZmsRREOGfUPutXmdUfYlKWXlFj8zgoXhE/o4HT0n4="></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </body>
+
+</html>

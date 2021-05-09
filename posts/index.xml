@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Blog</title>
+    <link>https://Jokernol.github.io/posts/</link>
+    <description>Recent content in Posts on Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 09 May 2021 14:19:11 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于SH1106</title>
+      <link>https://Jokernol.github.io/posts/%E5%85%B3%E4%BA%8Esh1106/</link>
+      <pubDate>Sun, 09 May 2021 14:19:11 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/%E5%85%B3%E4%BA%8Esh1106/</guid>
+      <description>似乎SH1106只是SSD1306的一个改版,而就目前网络上的资料而言,SSD1306的使用者似乎更多.
+Adafruit只提供了SSD1306的驱动(Adafruit_SSD1306),而SH1106只有一个基于该库修改的第三方库(Adafruit_SH1106)
+SSD1306和SH1106之间只有一个小差异：SH1106控制器具有132x64像素的内部RAM。SSD1306仅具有128x64像素。
+在具有SH1106控制器的标准128x64 OLED上遇到的第一个问题是：128x64窗口如何映射到132x64RAM?
+在大多数情况下，128x64 OLED居中在132x64区域内，这意味着RAM中的像素（2,0）对应的是显示器上的像素（0,0）。
+对于u8g2，SH1106的改动很小。我们只需要将显示移动2像素即可。
+但使用Adafruit lib则较为复杂.主体函数 Adafruit_SSD1306 :: display（void）在很大程度上取决于硬件体系结构，并假定RAM区域的宽度为128（对于SH1106是错误的）。
+因此若想将其移植到SH1106上则需要完全重写Adafruit_SSD1306 :: display（void）函数。
+此外SSD1306还具有在SH1106上没有的扩展命令（例如滚动命令）。SH1106仅支持页面寻址模式。而SSD1306添加了特殊的水平和垂直寻址模式。
+所以在我们后续的开发过程中，SH1106部分指令的缺失或许会是一个问题</description>
+    </item>
+    
+    <item>
+      <title>库文件的选用</title>
+      <link>https://Jokernol.github.io/posts/%E5%BA%93%E6%96%87%E4%BB%B6%E7%9A%84%E9%80%89%E7%94%A8/</link>
+      <pubDate>Sat, 08 May 2021 14:19:11 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/%E5%BA%93%E6%96%87%E4%BB%B6%E7%9A%84%E9%80%89%E7%94%A8/</guid>
+      <description>本次项目我们选用了控制器为SH1106的1.3英寸OLED屏作为显示输出,但Adafruit官方并没有提供SH1106的驱动程序.
+查阅相关资料发现对于SH1106,有两个可供选择的库,分别是u8g2和基于adafruit_SSD1306修改的第三方库.
+Adafruit_SH1106 vs u8g2    Adafruit_SH1106    以下是该库的Readme描述
+ Adafruit graphic library for SH1106 driver lcds.
+some small oled lcd use SH1106 driver.
+I change the adafruit SSD1306 to SH1106
+SH1106 driver similar to SSD1306. thus, just change the display() method.
+However, SH1106 driver don&amp;rsquo;t provide several functions such as scroll commands.
+Adafruit-GFX-Library https://github.com/adafruit/Adafruit-GFX-Library
+ 关于sh1106,有一点需要提及。
+官方Adafruit_GFX库选择在堆区域中分配图像缓存，而sh1106的作者Wonho-maker将其修改为全局储存区，即arduino内存概述中提到的静态数据(Static data)区域。
+我们可以通过下方的程序来比较这两者之间的区别
+/* Adafruit SSD1306和SH1106之间的内存消耗比较(byte) SSD1306 sketch=13082, global= 362, local=1686 SH1106 sketch=11190, global=1375, local= 673 */ #include &amp;lt;Wire.</description>
+    </item>
+    
+    <item>
+      <title>Arduino内存概述</title>
+      <link>https://Jokernol.github.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</link>
+      <pubDate>Sat, 08 May 2021 14:02:22 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/arduino%E5%86%85%E5%AD%98%E6%A6%82%E8%BF%B0/</guid>
+      <description>处理器/内存结构    在电子计算机的早期，出现了两种不同的处理器/内存结构：哈佛结构和冯诺依曼结构。
+冯诺依曼结构    冯·诺依曼结构也称普林斯顿结构，是一种将程序指令存储器和数据存储器合并在一起的存储器结构。程序指令存储地址和数据存储地址指向同一个存储器的不同物理位置，因此程序指令和数据的宽度相同，如英特尔公司的8086中央处理器的程序指令和数据都是16位宽。
+哈佛结构    哈佛结构是一种将程序指令存储和数据存储分开的存储器结构。哈佛结构是一种并行体系结构，它的主要特点是将程序和数据存储在不同的存储空间中，即程序存储器和数据存储器是两个独立的存储器，每个存储器独立编址、独立访问。中央处理器首先到程序指令存储器中读取程序指令内容，解码后得到数据地址，再到相应的数据存储器中读取数据，并进行下一步的操作（通常是执行）。程序指令存储和数据存储分开，可以使指令和数据有不同的数据宽度，如Microchip公司的PIC16芯片的程序指令是14位宽度，而数据是8位宽度。
+优劣    每种架构都有其优势：在所有其他条件相同的情况下，哈佛模型在性能方面具有优势。冯·诺依曼模型更具有拓展性。
+微控制器    诸如为Arduinos提供动力的微控制器是为嵌入式应用程序而设计的。与通用计算机不同，嵌入式处理器通常具有定义明确的任务，它必须以最低的成本可靠高效地执行，微控制器设计趋于精简。他们放弃了繁复的多层缓存和基于磁盘的虚拟内存系统，只保留了完成任务所必需的部分。
+Arduino UNO 内存概述    事实证明，哈佛模型非常适合嵌入式应用程序。Arduino UNO中使用的Atmega 328使用的是相对纯粹的哈佛架构。程序存储在Flash中，而数据存储在SRAM中。
+Arduino中有三种类型的内存：
+ Flash SRAM EEPROM  Flash    Flash用于存储程序映像和所有初始化的数据。您可以从Flash执行程序代码，但不能从正在执行的代码修改Flash中的数据。要修改数据，必须首先将其复制到SRAM中。Flash和SD卡所使用的技术相同。它是非易失性的，因此在关闭系统电源后，您的程序仍将存在。
+SRAM    SRAM(Static Random Access Memory)，可以被正在执行的程序读取和写入。 程序运行时，SRAM具有以下几种作用：
+ 静态数据(Static data) -为程序中所有全局变量和静态变量保留的空间 堆(Heap) -堆用于动态数据的分配，随着数据的不断分配，堆从静态数据的顶部向上增长 栈(Stack) -栈用于局部变量，并用于维护中断和函数调用的记录。栈从内存顶部开始向下扩展到堆。每个中断，函数调用和局部变量分配都会导致栈增长。而从中断或函数调用返回将回收该中断或函数使用的所有栈空间。  大部分的内存问题都源于堆栈冲突，当发生冲突时内存将会发生无法预知的损坏。较好的情况下，它会立即崩溃。而在其他情况下，冲突所导致的危害可能要到很久以后才会被注意到。所以我们必须谨慎。
+EEPROM    EEPROM是另一种非易失性储存器，可以从正在执行的程序中读取或写入。但EEPROM只能一个字节一个字节的读取，所以使用起来有点尴尬。虽然它不能取代珍贵的SRAM,但有时会非常有用。
+   种类 用途 容量 易失性 其他     Flash 程序，引导程序，只读用户数据 32KB(包括.</description>
+    </item>
+    
+  </channel>
+</rss>
