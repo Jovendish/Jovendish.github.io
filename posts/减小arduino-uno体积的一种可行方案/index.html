@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="color-scheme" content="light dark">
+
+    
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; block-all-mixed-content; default-src 'self'; child-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net/; form-action 'self'; frame-src 'self'; img-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://cdn.jsdelivr.net/; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; prefetch-src 'self'; connect-src 'self' https://www.google-analytics.com;">
+
+    
+
+    <meta name="author" content="Zhu">
+    <meta name="description" content="因我们开发的口袋示波器需要能够方便携带，而Arduino Uno 体积过大，不利于我们达到便携. 我们发现固定在面包板上的Arduino主要利用其微控制器，所以我们考虑使用其ATmega328P微控制器来替代Arduino以此减小体积.
+其特色为使用了Pico Power 技术，可提供超低功耗和低功率睡眠模式，非常适合用于电池供电仪器。
+​ATmega328P是一种基于AVR增强RISC架构的低功耗CMOS 8位微控制器。通过在单个时钟周期中执行强大的指令，ATmega328P实现了接近每兆赫1 MIPS的吞吐量，使系统设计者能够根据处理速度优化功耗。
+​AVR核心结合了一个丰富的指令集和32个通用工作寄存器。所有32个寄存器都直接连接到算术逻辑单元（ALU），允许在一个时钟周期内执行的一条指令中访问两个独立的寄存器。 由此产生的架构比传统的CISC微控制器具有更高的代码效率，同时实现的吞吐量是传统CISC微控制器的十倍。
+​基于独立ATmega328P的电路与基于Arduino里ATmega328P的电路的区别在于：在Arduino里的ATmega328P始终带有Arduino的引导程序，从而可以使用Arduino IDE对其进行编程。而独立的ATmega328P无法编程。所以为了能够使用Arduino IDE在ATmega328P上编程，我们将另购买的ATmega328P移植到面包板上时需要进行引导程序的烧录。ATmega328P引导程序烧录
+​注意：ATmega328P的Vcc引脚上能施加的最大电压为6V，建议的工作电压在3.3V-5V。
+​使用独立的ATmega328P还需要解决ATmega328P的供电运行和通信问题。
+​供电有两个方案：
+ ​方案一.使用9v或1.5v电池与7805稳压管进行供电   方案二.使用3.7V可充电锂电池以及充电模块搭配升压模块进行供电  ​为了缩小体积达到便携的目的，我们使用方案二
+​在通信模块中，我们使用蓝牙或者USB转串口通信。
+​由于材料限制，这里使用了USB to TTL转换接口，13pin输出使得绿色LED亮起">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="减小Arduino uno体积的一种可行方案"/>
+<meta name="twitter:description" content="因我们开发的口袋示波器需要能够方便携带，而Arduino Uno 体积过大，不利于我们达到便携. 我们发现固定在面包板上的Arduino主要利用其微控制器，所以我们考虑使用其ATmega328P微控制器来替代Arduino以此减小体积.
+其特色为使用了Pico Power 技术，可提供超低功耗和低功率睡眠模式，非常适合用于电池供电仪器。
+​ATmega328P是一种基于AVR增强RISC架构的低功耗CMOS 8位微控制器。通过在单个时钟周期中执行强大的指令，ATmega328P实现了接近每兆赫1 MIPS的吞吐量，使系统设计者能够根据处理速度优化功耗。
+​AVR核心结合了一个丰富的指令集和32个通用工作寄存器。所有32个寄存器都直接连接到算术逻辑单元（ALU），允许在一个时钟周期内执行的一条指令中访问两个独立的寄存器。 由此产生的架构比传统的CISC微控制器具有更高的代码效率，同时实现的吞吐量是传统CISC微控制器的十倍。
+​基于独立ATmega328P的电路与基于Arduino里ATmega328P的电路的区别在于：在Arduino里的ATmega328P始终带有Arduino的引导程序，从而可以使用Arduino IDE对其进行编程。而独立的ATmega328P无法编程。所以为了能够使用Arduino IDE在ATmega328P上编程，我们将另购买的ATmega328P移植到面包板上时需要进行引导程序的烧录。ATmega328P引导程序烧录
+​注意：ATmega328P的Vcc引脚上能施加的最大电压为6V，建议的工作电压在3.3V-5V。
+​使用独立的ATmega328P还需要解决ATmega328P的供电运行和通信问题。
+​供电有两个方案：
+ ​方案一.使用9v或1.5v电池与7805稳压管进行供电   方案二.使用3.7V可充电锂电池以及充电模块搭配升压模块进行供电  ​为了缩小体积达到便携的目的，我们使用方案二
+​在通信模块中，我们使用蓝牙或者USB转串口通信。
+​由于材料限制，这里使用了USB to TTL转换接口，13pin输出使得绿色LED亮起"/>
+
+    <meta property="og:title" content="减小Arduino uno体积的一种可行方案" />
+<meta property="og:description" content="因我们开发的口袋示波器需要能够方便携带，而Arduino Uno 体积过大，不利于我们达到便携. 我们发现固定在面包板上的Arduino主要利用其微控制器，所以我们考虑使用其ATmega328P微控制器来替代Arduino以此减小体积.
+其特色为使用了Pico Power 技术，可提供超低功耗和低功率睡眠模式，非常适合用于电池供电仪器。
+​ATmega328P是一种基于AVR增强RISC架构的低功耗CMOS 8位微控制器。通过在单个时钟周期中执行强大的指令，ATmega328P实现了接近每兆赫1 MIPS的吞吐量，使系统设计者能够根据处理速度优化功耗。
+​AVR核心结合了一个丰富的指令集和32个通用工作寄存器。所有32个寄存器都直接连接到算术逻辑单元（ALU），允许在一个时钟周期内执行的一条指令中访问两个独立的寄存器。 由此产生的架构比传统的CISC微控制器具有更高的代码效率，同时实现的吞吐量是传统CISC微控制器的十倍。
+​基于独立ATmega328P的电路与基于Arduino里ATmega328P的电路的区别在于：在Arduino里的ATmega328P始终带有Arduino的引导程序，从而可以使用Arduino IDE对其进行编程。而独立的ATmega328P无法编程。所以为了能够使用Arduino IDE在ATmega328P上编程，我们将另购买的ATmega328P移植到面包板上时需要进行引导程序的烧录。ATmega328P引导程序烧录
+​注意：ATmega328P的Vcc引脚上能施加的最大电压为6V，建议的工作电压在3.3V-5V。
+​使用独立的ATmega328P还需要解决ATmega328P的供电运行和通信问题。
+​供电有两个方案：
+ ​方案一.使用9v或1.5v电池与7805稳压管进行供电   方案二.使用3.7V可充电锂电池以及充电模块搭配升压模块进行供电  ​为了缩小体积达到便携的目的，我们使用方案二
+​在通信模块中，我们使用蓝牙或者USB转串口通信。
+​由于材料限制，这里使用了USB to TTL转换接口，13pin输出使得绿色LED亮起" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://Jokernol.github.io/posts/%E5%87%8F%E5%B0%8Farduino-uno%E4%BD%93%E7%A7%AF%E7%9A%84%E4%B8%80%E7%A7%8D%E5%8F%AF%E8%A1%8C%E6%96%B9%E6%A1%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-10T13:15:07&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-10T13:15:07&#43;08:00" />
+
+
+
+    <title>
+  减小Arduino uno体积的一种可行方案 · Blog
+</title>
+
+    
+      <link rel="canonical" href="https://Jokernol.github.io/posts/%E5%87%8F%E5%B0%8Farduino-uno%E4%BD%93%E7%A7%AF%E7%9A%84%E4%B8%80%E7%A7%8D%E5%8F%AF%E8%A1%8C%E6%96%B9%E6%A1%88/">
+    
+
+    <link rel="preload" href="/fonts/forkawesome-webfont.woff2?v=1.1.7" as="font" type="font/woff2" crossorigin>
+
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.8e23620d1750cfeedee0352c68787c8e99d48d3b2c2d56fa17395cdaf6da25ae.css" integrity="sha256-jiNiDRdQz&#43;7e4DUsaHh8jpnUjTssLVb6Fzlc2vbaJa4=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+      
+        
+        
+        <link rel="stylesheet" href="/css/coder-dark.min.f37febc669ce189201c1918fac1948a254686c8d366a312c2d72b2bb71ad97d1.css" integrity="sha256-83/rxmnOGJIBwZGPrBlIolRobI02ajEsLXKyu3Gtl9E=" crossorigin="anonymous" media="screen" />
+      
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    
+
+    <meta name="generator" content="Hugo 0.83.1" />
+  </head>
+
+  
+  
+    
+  
+  <body class="preload-transitions colorscheme-auto"
+        onload=""
+  >
+    
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      Blog
+    </a>
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://Jokernol.github.io/posts/%E5%87%8F%E5%B0%8Farduino-uno%E4%BD%93%E7%A7%AF%E7%9A%84%E4%B8%80%E7%A7%8D%E5%8F%AF%E8%A1%8C%E6%96%B9%E6%A1%88/">
+              减小Arduino uno体积的一种可行方案
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <time datetime='2021-05-10T13:15:07&#43;08:00'>
+                May 10, 2021
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa fa-clock-o" aria-hidden="true"></i>
+              One-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <p>因我们开发的口袋示波器需要能够方便携带，而Arduino Uno 体积过大，不利于我们达到便携.
+我们发现固定在面包板上的Arduino主要利用其微控制器，所以我们考虑使用其ATmega328P微控制器来替代Arduino以此减小体积.</p>
+<p>其特色为使用了Pico Power 技术，可提供超低功耗和低功率睡眠模式，非常适合用于电池供电仪器。</p>
+<p>​ATmega328P是一种基于AVR增强RISC架构的低功耗CMOS 8位微控制器。通过在单个时钟周期中执行强大的指令，ATmega328P实现了接近每兆赫1 MIPS的吞吐量，使系统设计者能够根据处理速度优化功耗。</p>
+<p>​AVR核心结合了一个丰富的指令集和32个通用工作寄存器。所有32个寄存器都直接连接到算术逻辑单元（ALU），允许在一个时钟周期内执行的一条指令中访问两个独立的寄存器。
+由此产生的架构比传统的CISC微控制器具有更高的代码效率，同时实现的吞吐量是传统CISC微控制器的十倍。</p>
+<p><img src="/images/a.jpg" alt=""></p>
+<p>​基于独立ATmega328P的电路与基于Arduino里ATmega328P的电路的区别在于：在Arduino里的ATmega328P始终带有Arduino的引导程序，从而可以使用Arduino IDE对其进行编程。而独立的ATmega328P无法编程。所以为了能够使用Arduino IDE在ATmega328P上编程，我们将另购买的ATmega328P移植到面包板上时需要进行引导程序的烧录。<a href="https://www.arduino.cc/en/Tutorial/BuiltInExamples/ArduinoToBreadboard">ATmega328P引导程序烧录</a></p>
+<p><img src="/images/b.png" alt=""></p>
+<p>​注意：ATmega328P的Vcc引脚上能施加的最大电压为6V，建议的工作电压在3.3V-5V。</p>
+<p>​使用独立的ATmega328P还需要解决ATmega328P的供电运行和通信问题。</p>
+<p>​供电有两个方案：</p>
+<ul>
+<li>​方案一.使用9v或1.5v电池与7805稳压管进行供电</li>
+</ul>
+<p><img src="/images/c.jpg" alt=""></p>
+<ul>
+<li>方案二.使用3.7V可充电锂电池以及充电模块搭配升压模块进行供电</li>
+</ul>
+<p><img src="/images/1.png" alt=""></p>
+<p><img src="/images/2.png" alt=""></p>
+<p><img src="/images/3.png" alt=""></p>
+<p>​为了缩小体积达到便携的目的，我们使用方案二</p>
+<p>​在通信模块中，我们使用蓝牙或者USB转串口通信。</p>
+<p><img src="/images/4.png" alt=""></p>
+<p><img src="/images/5.jpg" alt=""></p>
+<p>​由于材料限制，这里使用了USB to TTL转换接口，13pin输出使得绿色LED亮起</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      
+
+    </main>
+
+    
+      
+      <script src="/js/coder.min.235666b114443867d43eeb5799d51f6252965e5163f338285e113fa381d3d27e.js" integrity="sha256-I1ZmsRREOGfUPutXmdUfYlKWXlFj8zgoXhE/o4HT0n4="></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </body>
+
+</html>

@@ -6,7 +6,26 @@
     <description>Recent content on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 09 May 2021 14:19:11 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 May 2021 13:15:07 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>减小Arduino uno体积的一种可行方案</title>
+      <link>https://Jokernol.github.io/posts/%E5%87%8F%E5%B0%8Farduino-uno%E4%BD%93%E7%A7%AF%E7%9A%84%E4%B8%80%E7%A7%8D%E5%8F%AF%E8%A1%8C%E6%96%B9%E6%A1%88/</link>
+      <pubDate>Mon, 10 May 2021 13:15:07 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/%E5%87%8F%E5%B0%8Farduino-uno%E4%BD%93%E7%A7%AF%E7%9A%84%E4%B8%80%E7%A7%8D%E5%8F%AF%E8%A1%8C%E6%96%B9%E6%A1%88/</guid>
+      <description>因我们开发的口袋示波器需要能够方便携带，而Arduino Uno 体积过大，不利于我们达到便携. 我们发现固定在面包板上的Arduino主要利用其微控制器，所以我们考虑使用其ATmega328P微控制器来替代Arduino以此减小体积.
+其特色为使用了Pico Power 技术，可提供超低功耗和低功率睡眠模式，非常适合用于电池供电仪器。
+​ATmega328P是一种基于AVR增强RISC架构的低功耗CMOS 8位微控制器。通过在单个时钟周期中执行强大的指令，ATmega328P实现了接近每兆赫1 MIPS的吞吐量，使系统设计者能够根据处理速度优化功耗。
+​AVR核心结合了一个丰富的指令集和32个通用工作寄存器。所有32个寄存器都直接连接到算术逻辑单元（ALU），允许在一个时钟周期内执行的一条指令中访问两个独立的寄存器。 由此产生的架构比传统的CISC微控制器具有更高的代码效率，同时实现的吞吐量是传统CISC微控制器的十倍。
+​基于独立ATmega328P的电路与基于Arduino里ATmega328P的电路的区别在于：在Arduino里的ATmega328P始终带有Arduino的引导程序，从而可以使用Arduino IDE对其进行编程。而独立的ATmega328P无法编程。所以为了能够使用Arduino IDE在ATmega328P上编程，我们将另购买的ATmega328P移植到面包板上时需要进行引导程序的烧录。ATmega328P引导程序烧录
+​注意：ATmega328P的Vcc引脚上能施加的最大电压为6V，建议的工作电压在3.3V-5V。
+​使用独立的ATmega328P还需要解决ATmega328P的供电运行和通信问题。
+​供电有两个方案：
+ ​方案一.使用9v或1.5v电池与7805稳压管进行供电   方案二.使用3.7V可充电锂电池以及充电模块搭配升压模块进行供电  ​为了缩小体积达到便携的目的，我们使用方案二
+​在通信模块中，我们使用蓝牙或者USB转串口通信。
+​由于材料限制，这里使用了USB to TTL转换接口，13pin输出使得绿色LED亮起</description>
+    </item>
+    
     <item>
       <title>关于SH1106</title>
       <link>https://Jokernol.github.io/posts/%E5%85%B3%E4%BA%8Esh1106/</link>
