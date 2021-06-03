@@ -6,7 +6,22 @@
     <description>Recent content on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 10 May 2021 13:15:07 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Jun 2021 12:47:17 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>解决Atmega328P中Flash容量过小问题的一些思考</title>
+      <link>https://Jokernol.github.io/posts/%E8%A7%A3%E5%86%B3atmega328p%E4%B8%ADflash%E5%AE%B9%E9%87%8F%E8%BF%87%E5%B0%8F%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</link>
+      <pubDate>Thu, 03 Jun 2021 12:47:17 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/%E8%A7%A3%E5%86%B3atmega328p%E4%B8%ADflash%E5%AE%B9%E9%87%8F%E8%BF%87%E5%B0%8F%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</guid>
+      <description>由于Atmega328P中Flash的大小仅有32K，而在我们的设想中，除了基础的示波器功能外，还应当进行二次开发拓展更多的功能。就目前而言，示波器功能的实现已经占用了32K中的40%，余留的空间实在有限。所以该问题的解决迫在眉睫。
+解决方案    方案一：    在最初的设想中，我们想到可以使用SD卡作为外部拓展。在程序中分配一块内存并将SD卡中的程序加载到该内存中，然后跳转至该位置。
+void (*app_start)(void); void *pBin; void begin() { // allocate the memory for the sketch  pBin = malloc(512); app_start = pBin; // todo: copy the SD card file into pBin  // this executes the pBin code.  (*app_start)(); } // never gets called. void loop() { } 但由于Atmega328P采用Harvard架构，这意味着Flash和Memory在物理层面上是完全分离的，每个都有自己独立的地址空间，就连总线位宽甚至都不相同。所以简单的通过堆栈指针来试图运行从SD卡中读取出的数据并不可行。
+方案二：    另一种解决方案是，重新编写Atmega328P的引导加载程序，使其从SD卡中读取十六进制文件，但这样做同样有其弊端，一是引导加载程序过于底层，就我们目前的水平而言，编写起来可能有些困难。二是若从SD卡中运行程序，与原先相比IO速率的相差可能达到一百倍甚至更多。对于敏感的示波器而言，这个问题可能会十分致命。
+不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如bitlash。
+同时也发现有人利用arduino实现了一个类似gameboy的游戏机(gamebuino)，使用的方式也是重写引导加载程序。
+所以我想这两个项目可能会有一定的参考价值。</description>
+    </item>
+    
     <item>
       <title>减小Arduino uno体积的一种可行方案</title>
       <link>https://Jokernol.github.io/posts/%E5%87%8F%E5%B0%8Farduino-uno%E4%BD%93%E7%A7%AF%E7%9A%84%E4%B8%80%E7%A7%8D%E5%8F%AF%E8%A1%8C%E6%96%B9%E6%A1%88/</link>
