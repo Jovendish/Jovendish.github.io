@@ -208,7 +208,7 @@ void (*app_start)(void); void *pBin; void begin() { // allocate the memory for t
   </a>
 </h4>
 <p>另一种解决方案是，重新编写Atmega328P的引导加载程序，使其从SD卡中读取十六进制文件，但这样做同样有其弊端，一是引导加载程序过于底层，就我们目前的水平而言，编写起来可能有些困难。二是若从SD卡中运行程序，与原先相比IO速率的相差可能达到一百倍甚至更多。对于敏感的示波器而言，这个问题可能会十分致命。</p>
-<p>不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如<a href="https://gamebuino.com/" title="bitlash">bitlash</a>。</p>
+<p>不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如<a href="http://bitlash.net" title="bitlash">bitlash</a>。</p>
 <p>同时也发现有人利用arduino实现了一个类似gameboy的游戏机(<a href="https://gamebuino.com/" title="gamebuino">gamebuino</a>)，使用的方式也是重写引导加载程序。</p>
 <p>所以我想这两个项目可能会有一定的参考价值。</p>
 
