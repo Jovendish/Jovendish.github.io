@@ -19,7 +19,8 @@ void (*app_start)(void); void *pBin; void begin() { // allocate the memory for t
 方案二：    另一种解决方案是，重新编写Atmega328P的引导加载程序，使其从SD卡中读取十六进制文件，但这样做同样有其弊端，一是引导加载程序过于底层，就我们目前的水平而言，编写起来可能有些困难。二是若从SD卡中运行程序，与原先相比IO速率的相差可能达到一百倍甚至更多。对于敏感的示波器而言，这个问题可能会十分致命。
 不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如bitlash。
 同时也发现有人利用arduino实现了一个类似gameboy的游戏机(gamebuino)，使用的方式也是重写引导加载程序。
-所以我想这两个项目可能会有一定的参考价值。">
+所以我想这两个项目可能会有一定的参考价值。
+方案三：    方案三是最简单的，就是再加一块Atmega328P，然后控制电路通过按钮或是别的方式控制切换，从而实现不同的功能。但这个方法未免太不优雅，所以在设想中只能作为最后不得已时的备选方案。">
     <meta name="keywords" content="blog,developer,personal">
 
     <meta name="twitter:card" content="summary"/>
@@ -30,7 +31,8 @@ void (*app_start)(void); void *pBin; void begin() { // allocate the memory for t
 方案二：    另一种解决方案是，重新编写Atmega328P的引导加载程序，使其从SD卡中读取十六进制文件，但这样做同样有其弊端，一是引导加载程序过于底层，就我们目前的水平而言，编写起来可能有些困难。二是若从SD卡中运行程序，与原先相比IO速率的相差可能达到一百倍甚至更多。对于敏感的示波器而言，这个问题可能会十分致命。
 不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如bitlash。
 同时也发现有人利用arduino实现了一个类似gameboy的游戏机(gamebuino)，使用的方式也是重写引导加载程序。
-所以我想这两个项目可能会有一定的参考价值。"/>
+所以我想这两个项目可能会有一定的参考价值。
+方案三：    方案三是最简单的，就是再加一块Atmega328P，然后控制电路通过按钮或是别的方式控制切换，从而实现不同的功能。但这个方法未免太不优雅，所以在设想中只能作为最后不得已时的备选方案。"/>
 
     <meta property="og:title" content="解决Atmega328P中Flash容量过小问题的一些思考" />
 <meta property="og:description" content="由于Atmega328P中Flash的大小仅有32K，而在我们的设想中，除了基础的示波器功能外，还应当进行二次开发拓展更多的功能。就目前而言，示波器功能的实现已经占用了32K中的40%，余留的空间实在有限。所以该问题的解决迫在眉睫。
@@ -39,7 +41,8 @@ void (*app_start)(void); void *pBin; void begin() { // allocate the memory for t
 方案二：    另一种解决方案是，重新编写Atmega328P的引导加载程序，使其从SD卡中读取十六进制文件，但这样做同样有其弊端，一是引导加载程序过于底层，就我们目前的水平而言，编写起来可能有些困难。二是若从SD卡中运行程序，与原先相比IO速率的相差可能达到一百倍甚至更多。对于敏感的示波器而言，这个问题可能会十分致命。
 不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如bitlash。
 同时也发现有人利用arduino实现了一个类似gameboy的游戏机(gamebuino)，使用的方式也是重写引导加载程序。
-所以我想这两个项目可能会有一定的参考价值。" />
+所以我想这两个项目可能会有一定的参考价值。
+方案三：    方案三是最简单的，就是再加一块Atmega328P，然后控制电路通过按钮或是别的方式控制切换，从而实现不同的功能。但这个方法未免太不优雅，所以在设想中只能作为最后不得已时的备选方案。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://Jokernol.github.io/posts/%E8%A7%A3%E5%86%B3atmega328p%E4%B8%ADflash%E5%AE%B9%E9%87%8F%E8%BF%87%E5%B0%8F%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2021-06-03T12:47:17&#43;08:00" />
@@ -211,6 +214,13 @@ void (*app_start)(void); void *pBin; void begin() { // allocate the memory for t
 <p>不过在搜寻资料的时候，有人提到，Arduino不允许用户代码从SRAM运行，但可以在其中运行一个解释器，比如<a href="http://bitlash.net" title="bitlash">bitlash</a>。</p>
 <p>同时也发现有人利用arduino实现了一个类似gameboy的游戏机(<a href="https://gamebuino.com/" title="gamebuino">gamebuino</a>)，使用的方式也是重写引导加载程序。</p>
 <p>所以我想这两个项目可能会有一定的参考价值。</p>
+<h4 id="方案三">
+  方案三：
+  <a class="heading-link" href="#%e6%96%b9%e6%a1%88%e4%b8%89">
+    <i class="fa fa-link" aria-hidden="true"></i>
+  </a>
+</h4>
+<p>方案三是最简单的，就是再加一块Atmega328P，然后控制电路通过按钮或是别的方式控制切换，从而实现不同的功能。但这个方法未免太不优雅，所以在设想中只能作为最后不得已时的备选方案。</p>
 
       </div>
 
