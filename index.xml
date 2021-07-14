@@ -6,7 +6,16 @@
     <description>Recent content on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 03 Jun 2021 12:47:17 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 14 Jul 2021 18:50:35 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>示波器代码简述</title>
+      <link>https://Jokernol.github.io/posts/%E7%A4%BA%E6%B3%A2%E5%99%A8%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</link>
+      <pubDate>Wed, 14 Jul 2021 18:50:35 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/%E7%A4%BA%E6%B3%A2%E5%99%A8%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</guid>
+      <description>Oscilloscope v2</description>
+    </item>
+    
     <item>
       <title>解决Atmega328P中Flash容量过小问题的一些思考</title>
       <link>https://Jokernol.github.io/posts/%E8%A7%A3%E5%86%B3atmega328p%E4%B8%ADflash%E5%AE%B9%E9%87%8F%E8%BF%87%E5%B0%8F%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E4%BA%9B%E6%80%9D%E8%80%83/</link>
