@@ -13,7 +13,7 @@
       <pubDate>Wed, 14 Jul 2021 18:50:35 +0800</pubDate>
       
       <guid>https://Jokernol.github.io/posts/%E7%A4%BA%E6%B3%A2%E5%99%A8%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</guid>
-      <description>Oscilloscope v2</description>
+      <description>#include &amp;lt;Adafruit_GFX.h&amp;gt;#include &amp;lt;Wire.h&amp;gt;//#include &amp;lt;Adafruit_SSD1306.h&amp;gt; #include &amp;lt;Adafruit_SH1106.h&amp;gt; // https://github.com/wonho-maker/Adafruit_SH1106#include &amp;lt;EEPROM.h&amp;gt; #define SCREEN_WIDTH 128 // OLED display width #define SCREEN_HEIGHT 64 // OLED display height #define REC_LENG 200 // size of wave data buffer #define MIN_TRIG_SWING 5 // minimum trigger swing.(Display &amp;#34;Unsync&amp;#34; if swing smaller than this value  // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins) #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin) // Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;amp;Wire, OLED_RESET); // device name is oled Adafruit_SH1106 oled(OLED_RESET); // use this when SH1106  #define R_12k 12 // Pin 12 12k ohm #define R_820k 16 // (16=Pin A2) 820k ohm for AC low range #define R_82k 17 // (17=Pin A3) 82k omm for AC high range  // Range name table (those are stored in flash memory) const char vRangeName[10][5] PROGMEM = {&amp;#34;A50V&amp;#34;, &amp;#34;A 5V&amp;#34;, &amp;#34; 50V&amp;#34;, &amp;#34; 20V&amp;#34;, &amp;#34; 10V&amp;#34;, &amp;#34; 5V&amp;#34;, &amp;#34; 2V&amp;#34;, &amp;#34; 1V&amp;#34;, &amp;#34;0.</description>
     </item>
     
     <item>
