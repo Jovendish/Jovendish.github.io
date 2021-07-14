@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="color-scheme" content="light dark">
+
+    
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; block-all-mixed-content; default-src 'self'; child-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net/; form-action 'self'; frame-src 'self'; img-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://cdn.jsdelivr.net/; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; prefetch-src 'self'; connect-src 'self' https://www.google-analytics.com;">
+
+    
+
+    <meta name="author" content="Zhu">
+    <meta name="description" content="#include &lt;Adafruit_GFX.h&gt;#include &lt;Wire.h&gt;//#include &lt;Adafruit_SSD1306.h&gt; #include &lt;Adafruit_SH1106.h&gt; // https://github.com/wonho-maker/Adafruit_SH1106#include &lt;EEPROM.h&gt; #define SCREEN_WIDTH 128 // OLED display width #define SCREEN_HEIGHT 64 // OLED display height #define REC_LENG 200 // size of wave data buffer #define MIN_TRIG_SWING 5 // minimum trigger swing.(Display &#34;Unsync&#34; if swing smaller than this value  // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins) #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin) // Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RESET); // device name is oled Adafruit_SH1106 oled(OLED_RESET); // use this when SH1106  #define R_12k 12 // Pin 12 12k ohm #define R_820k 16 // (16=Pin A2) 820k ohm for AC low range #define R_82k 17 // (17=Pin A3) 82k omm for AC high range  // Range name table (those are stored in flash memory) const char vRangeName[10][5] PROGMEM = {&#34;A50V&#34;, &#34;A 5V&#34;, &#34; 50V&#34;, &#34; 20V&#34;, &#34; 10V&#34;, &#34; 5V&#34;, &#34; 2V&#34;, &#34; 1V&#34;, &#34;0.">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Oscilloscope V2代码一览"/>
+<meta name="twitter:description" content="#include &lt;Adafruit_GFX.h&gt;#include &lt;Wire.h&gt;//#include &lt;Adafruit_SSD1306.h&gt; #include &lt;Adafruit_SH1106.h&gt; // https://github.com/wonho-maker/Adafruit_SH1106#include &lt;EEPROM.h&gt; #define SCREEN_WIDTH 128 // OLED display width #define SCREEN_HEIGHT 64 // OLED display height #define REC_LENG 200 // size of wave data buffer #define MIN_TRIG_SWING 5 // minimum trigger swing.(Display &#34;Unsync&#34; if swing smaller than this value  // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins) #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin) // Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RESET); // device name is oled Adafruit_SH1106 oled(OLED_RESET); // use this when SH1106  #define R_12k 12 // Pin 12 12k ohm #define R_820k 16 // (16=Pin A2) 820k ohm for AC low range #define R_82k 17 // (17=Pin A3) 82k omm for AC high range  // Range name table (those are stored in flash memory) const char vRangeName[10][5] PROGMEM = {&#34;A50V&#34;, &#34;A 5V&#34;, &#34; 50V&#34;, &#34; 20V&#34;, &#34; 10V&#34;, &#34; 5V&#34;, &#34; 2V&#34;, &#34; 1V&#34;, &#34;0."/>
+
+    <meta property="og:title" content="Oscilloscope V2代码一览" />
+<meta property="og:description" content="#include &lt;Adafruit_GFX.h&gt;#include &lt;Wire.h&gt;//#include &lt;Adafruit_SSD1306.h&gt; #include &lt;Adafruit_SH1106.h&gt; // https://github.com/wonho-maker/Adafruit_SH1106#include &lt;EEPROM.h&gt; #define SCREEN_WIDTH 128 // OLED display width #define SCREEN_HEIGHT 64 // OLED display height #define REC_LENG 200 // size of wave data buffer #define MIN_TRIG_SWING 5 // minimum trigger swing.(Display &#34;Unsync&#34; if swing smaller than this value  // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins) #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin) // Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RESET); // device name is oled Adafruit_SH1106 oled(OLED_RESET); // use this when SH1106  #define R_12k 12 // Pin 12 12k ohm #define R_820k 16 // (16=Pin A2) 820k ohm for AC low range #define R_82k 17 // (17=Pin A3) 82k omm for AC high range  // Range name table (those are stored in flash memory) const char vRangeName[10][5] PROGMEM = {&#34;A50V&#34;, &#34;A 5V&#34;, &#34; 50V&#34;, &#34; 20V&#34;, &#34; 10V&#34;, &#34; 5V&#34;, &#34; 2V&#34;, &#34; 1V&#34;, &#34;0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E4%B8%80%E8%A7%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-14T18:50:35+08:00" />
+<meta property="article:modified_time" content="2021-07-14T18:50:35+08:00" />
+
+
+
+    <title>
+  Oscilloscope V2代码一览 · Blog
+</title>
+
+    
+      <link rel="canonical" href="https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E4%B8%80%E8%A7%88/">
+    
+
+    <link rel="preload" href="/fonts/forkawesome-webfont.woff2?v=1.1.7" as="font" type="font/woff2" crossorigin>
+
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.8e23620d1750cfeedee0352c68787c8e99d48d3b2c2d56fa17395cdaf6da25ae.css" integrity="sha256-jiNiDRdQz&#43;7e4DUsaHh8jpnUjTssLVb6Fzlc2vbaJa4=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+      
+        
+        
+        <link rel="stylesheet" href="/css/coder-dark.min.f37febc669ce189201c1918fac1948a254686c8d366a312c2d72b2bb71ad97d1.css" integrity="sha256-83/rxmnOGJIBwZGPrBlIolRobI02ajEsLXKyu3Gtl9E=" crossorigin="anonymous" media="screen" />
+      
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    
+
+    <meta name="generator" content="Hugo 0.85.0" />
+  </head>
+
+  
+  
+    
+  
+  <body class="preload-transitions colorscheme-auto"
+        onload=""
+  >
+    
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      Blog
+    </a>
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E4%B8%80%E8%A7%88/">
+              Oscilloscope V2代码一览
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <time datetime='2021-07-14T18:50:35&#43;08:00'>
+                July 14, 2021
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa fa-clock-o" aria-hidden="true"></i>
+              29-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">#include</span> <span style="">&lt;Adafruit_GFX.h&gt;</span><span style="">
+</span><span style="">#include</span> <span style="">&lt;Wire.h&gt;</span><span style="">
+</span><span style=""></span><span style="font-style:italic">//#include &lt;Adafruit_SSD1306.h&gt;
+</span><span style="font-style:italic"></span><span style="">#include</span> <span style="">&lt;Adafruit_SH1106.h&gt;  // https://github.com/wonho-maker/Adafruit_SH1106</span><span style="">
+</span><span style="">#include</span> <span style="">&lt;EEPROM.h&gt;</span><span style="">
+</span><span style=""></span>
+<span style="">#define SCREEN_WIDTH 128  </span><span style="font-style:italic">// OLED display width
+</span><span style="font-style:italic"></span><span style="">#define SCREEN_HEIGHT 64  </span><span style="font-style:italic">// OLED display height
+</span><span style="font-style:italic"></span><span style="">#define REC_LENG 200      </span><span style="font-style:italic">// size of wave data buffer
+</span><span style="font-style:italic"></span><span style="">#define MIN_TRIG_SWING 5  </span><span style="font-style:italic">// minimum trigger swing.(Display &#34;Unsync&#34; if swing smaller than this value
+</span><span style="font-style:italic"></span>
+<span style="font-style:italic">// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+</span><span style="font-style:italic"></span><span style="">#define OLED_RESET -1  </span><span style="font-style:italic">// Reset pin # (or -1 if sharing Arduino reset pin)
+</span><span style="font-style:italic">// Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;Wire, OLED_RESET);   // device name is oled
+</span><span style="font-style:italic"></span>Adafruit_SH1106 oled(OLED_RESET);  <span style="font-style:italic">// use this when SH1106
+</span><span style="font-style:italic"></span>
+<span style="">#define R_12k 12   </span><span style="font-style:italic">// Pin 12 12k ohm
+</span><span style="font-style:italic"></span><span style="">#define R_820k 16  </span><span style="font-style:italic">// (16=Pin A2) 820k ohm for AC low range
+</span><span style="font-style:italic"></span><span style="">#define R_82k 17   </span><span style="font-style:italic">// (17=Pin A3) 82k omm for AC high range
+</span><span style="font-style:italic"></span>
+<span style="font-style:italic">// Range name table (those are stored in flash memory)
+</span><span style="font-style:italic"></span><span style="font-weight:bold">const</span> <span style="">char</span> vRangeName[10][5] PROGMEM = {<span style="font-style:italic">&#34;A50V&#34;</span>, <span style="font-style:italic">&#34;A 5V&#34;</span>, <span style="font-style:italic">&#34; 50V&#34;</span>, <span style="font-style:italic">&#34; 20V&#34;</span>, <span style="font-style:italic">&#34; 10V&#34;</span>, <span style="font-style:italic">&#34;  5V&#34;</span>, <span style="font-style:italic">&#34;  2V&#34;</span>, <span style="font-style:italic">&#34;  1V&#34;</span>, <span style="font-style:italic">&#34;0.5V&#34;</span>, <span style="font-style:italic">&#34;0.2V&#34;</span>};  <span style="font-style:italic">// Vertical display character (number of characters including \ 0 is required)
+</span><span style="font-style:italic"></span><span style="font-weight:bold">const</span> <span style="">char</span>* <span style="font-weight:bold">const</span> vstring_table[] PROGMEM = {vRangeName[0], vRangeName[1], vRangeName[2], vRangeName[3], vRangeName[4], vRangeName[5], vRangeName[6], vRangeName[7], vRangeName[8], vRangeName[9]};
+<span style="font-weight:bold">const</span> <span style="">char</span> hRangeName[12][6] PROGMEM = {<span style="font-style:italic">&#34;200ms&#34;</span>, <span style="font-style:italic">&#34;100ms&#34;</span>, <span style="font-style:italic">&#34; 50ms&#34;</span>, <span style="font-style:italic">&#34; 20ms&#34;</span>, <span style="font-style:italic">&#34; 10ms&#34;</span>, <span style="font-style:italic">&#34;  5ms&#34;</span>, <span style="font-style:italic">&#34;  2ms&#34;</span>, <span style="font-style:italic">&#34;  1ms&#34;</span>, <span style="font-style:italic">&#34;500us&#34;</span>, <span style="font-style:italic">&#34;200us&#34;</span>, <span style="font-style:italic">&#34;100us&#34;</span>, <span style="font-style:italic">&#34; 50us&#34;</span>};  <span style="font-style:italic">//  Hrizontal display characters
+</span><span style="font-style:italic"></span><span style="font-weight:bold">const</span> <span style="">char</span>* <span style="font-weight:bold">const</span> hstring_table[] PROGMEM = {hRangeName[0], hRangeName[1], hRangeName[2], hRangeName[3], hRangeName[4], hRangeName[5], hRangeName[6], hRangeName[7], hRangeName[8], hRangeName[9], hRangeName[10], hRangeName[11]};
+<span style="font-weight:bold">const</span> PROGMEM <span style="">float</span> hRangeValue[] = {0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.5e-3, 0.2e-3, 0.2e-3, 0.2e-3};  <span style="font-style:italic">// record speed in second. ( = 25pix on screen) this value used for freq calc.
+</span><span style="font-style:italic"></span>
+<span style="">int</span> waveBuff[REC_LENG];   <span style="font-style:italic">// wave form buffer (RAM remaining capacity is barely)
+</span><span style="font-style:italic"></span><span style="">char</span> chrBuff[8];          <span style="font-style:italic">// display string buffer
+</span><span style="font-style:italic"></span><span style="">char</span> hScale[] = <span style="font-style:italic">&#34;xxxAs&#34;</span>;  <span style="font-style:italic">// horizontal scale character
+</span><span style="font-style:italic"></span><span style="">char</span> vScale[] = <span style="font-style:italic">&#34;xxxx&#34;</span>;   <span style="font-style:italic">// vartical scale
+</span><span style="font-style:italic"></span>
+<span style="">float</span> lsb5V = 0.00563965;  <span style="font-style:italic">// sensivity coefficient of 5V range. std=0.00563965 1.1*630/(1024*120)
+</span><span style="font-style:italic"></span><span style="">float</span> lsb50V = 0.0512939;  <span style="font-style:italic">// sensivity coefficient of 50V range. std=0.0512939 1.1*520.91/(1024*10.91)
+</span><span style="font-style:italic"></span>
+<span style="">float</span> lsb5Vac = 0.00630776;  <span style="font-style:italic">// sensivity coefficient of 5V range, voltage per LSB std=0.00630776 V/LSB
+</span><span style="font-style:italic"></span><span style="">float</span> lsb50Vac = 0.0579751;  <span style="font-style:italic">// sensivity coefficient of 50V range, voltage per LSB std=0.0579751 V/LSB
+</span><span style="font-style:italic"></span>
+<span style="font-weight:bold">volatile</span> <span style="">int</span> vRange;                    <span style="font-style:italic">// V-range number                   2:50V,  3:20V,  4:10V,  5:5V,  6:2V,  7:1V,  8:0.5V,  9:0.2V
+</span><span style="font-style:italic"></span><span style="font-weight:bold">volatile</span> <span style="">int</span> hRange;                    <span style="font-style:italic">// H-range nubmer 0:200ms, 1:100ms, 2:50ms, 3:20ms, 4:10ms, 5:5ms, 6;2ms, 7:1ms, 8:500us, 9;200us
+</span><span style="font-style:italic"></span><span style="font-weight:bold">volatile</span> <span style="">int</span> trigD;                     <span style="font-style:italic">// trigger slope flag,     0:positive 1:negative
+</span><span style="font-style:italic"></span><span style="font-weight:bold">volatile</span> <span style="">int</span> scopeP;                    <span style="font-style:italic">// operation scope position number. 0:Veratical, 1:Hrizontal, 2:Trigger slope
+</span><span style="font-style:italic"></span><span style="font-weight:bold">volatile</span> boolean hold = false;          <span style="font-style:italic">// hold flag
+</span><span style="font-style:italic"></span><span style="font-weight:bold">volatile</span> boolean switchPushed = false;  <span style="font-style:italic">// flag of switch pushed !
+</span><span style="font-style:italic"></span><span style="font-weight:bold">volatile</span> <span style="">int</span> saveTimer;                 <span style="font-style:italic">// remaining time for saving EEPROM
+</span><span style="font-style:italic"></span><span style="">int</span> timeExec;                           <span style="font-style:italic">// approximate execution time of the current range setting (ms)
+</span><span style="font-style:italic"></span>
+<span style="">int</span> dataMin;       <span style="font-style:italic">// buffer minimum value (smallest=0)
+</span><span style="font-style:italic"></span><span style="">int</span> dataMax;       <span style="font-style:italic">//        maximum value (largest=1023)
+</span><span style="font-style:italic"></span><span style="">int</span> dataAve;       <span style="font-style:italic">// 10 x average value (use 10x value to keep accuracy. so, max=10230)
+</span><span style="font-style:italic"></span><span style="">int</span> dataRms;       <span style="font-style:italic">// 10x rms. value
+</span><span style="font-style:italic"></span><span style="">int</span> rangeMax;      <span style="font-style:italic">// buffer value to graph full swing
+</span><span style="font-style:italic"></span><span style="">int</span> rangeMin;      <span style="font-style:italic">// buffer value of graph bottom
+</span><span style="font-style:italic"></span><span style="">int</span> rangeMaxDisp;  <span style="font-style:italic">// display value of max. (100x value)
+</span><span style="font-style:italic"></span><span style="">int</span> rangeMinDisp;  <span style="font-style:italic">// display value if min.
+</span><span style="font-style:italic"></span><span style="">int</span> trigP;         <span style="font-style:italic">// trigger position pointer on data buffer
+</span><span style="font-style:italic"></span>boolean trigSync;  <span style="font-style:italic">// flag of trigger detected
+</span><span style="font-style:italic"></span><span style="">int</span> att10x;        <span style="font-style:italic">// 10x attenetor ON (effective when 1)
+</span><span style="font-style:italic"></span><span style="">int</span> inMode;        <span style="font-style:italic">// input mode 0=DC+, 1=DC+-, 2=AC
+</span><span style="font-style:italic"></span><span style="">int</span> offset5Vac;
+<span style="">int</span> offset50Vac;
+
+<span style="">float</span> waveFreq;  <span style="font-style:italic">// frequency (Hz)
+</span><span style="font-style:italic"></span><span style="">float</span> waveDuty;  <span style="font-style:italic">// duty ratio (%)
+</span><span style="font-style:italic"></span>
+<span style="">void</span> setup() {
+    pinMode(2, INPUT_PULLUP);   <span style="font-style:italic">// button pushed interrupt (int.0 IRQ)
+</span><span style="font-style:italic"></span>    pinMode(7, INPUT_PULLUP);   <span style="font-style:italic">// AC Mode
+</span><span style="font-style:italic"></span>    pinMode(8, INPUT_PULLUP);   <span style="font-style:italic">// Select button
+</span><span style="font-style:italic"></span>    pinMode(9, INPUT_PULLUP);   <span style="font-style:italic">// Up
+</span><span style="font-style:italic"></span>    pinMode(10, INPUT_PULLUP);  <span style="font-style:italic">// Down
+</span><span style="font-style:italic"></span>    pinMode(11, INPUT_PULLUP);  <span style="font-style:italic">// Hold
+</span><span style="font-style:italic"></span>    pinMode(13, OUTPUT);        <span style="font-style:italic">// LED
+</span><span style="font-style:italic"></span>    pinMode(R_12k, INPUT);      <span style="font-style:italic">// pin12 1/10 attenuator(Off=High-Z, Enable=Output Low)
+</span><span style="font-style:italic"></span>    pinMode(R_820k, INPUT);     <span style="font-style:italic">// A2
+</span><span style="font-style:italic"></span>    pinMode(R_82k, INPUT);      <span style="font-style:italic">// A3
+</span><span style="font-style:italic"></span>
+    uuPinOutputLow(0b00000001111000, 0b000000);  <span style="font-style:italic">// output low at pin D3-D6
+</span><span style="font-style:italic"></span>                                                 <span style="font-style:italic">//  oled.begin(SSD1306_SWITCHCAPVCC, 0x3C); // select 3C or 3D (set your OLED I2C address)
+</span><span style="font-style:italic"></span>    oled.begin(SH1106_SWITCHCAPVCC, 0x3C);       <span style="font-style:italic">// use this when SH1106
+</span><span style="font-style:italic"></span>
+    auxFunctions();                        <span style="font-style:italic">// Voltage measure (never return)
+</span><span style="font-style:italic"></span>    loadEEPROM();                          <span style="font-style:italic">// read last settings from EEPROM
+</span><span style="font-style:italic"></span>    analogReference(INTERNAL);             <span style="font-style:italic">// ADC full scale = 1.1V
+</span><span style="font-style:italic"></span>    attachInterrupt(0, pin2IRQ, FALLING);  <span style="font-style:italic">// activate IRQ at falling edge mode
+</span><span style="font-style:italic"></span>    startScreen();                         <span style="font-style:italic">// display start message
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> loop() {
+    setInputOffset();        <span style="font-style:italic">// coupling mode set(AC/DC)
+</span><span style="font-style:italic"></span>    setConditions();         <span style="font-style:italic">// set measurment conditions
+</span><span style="font-style:italic"></span>    digitalWrite(13, HIGH);  <span style="font-style:italic">// flash LED
+</span><span style="font-style:italic"></span>    readWave();              <span style="font-style:italic">// read wave form and store into buffer memory
+</span><span style="font-style:italic"></span>    digitalWrite(13, LOW);   <span style="font-style:italic">// stop LED
+</span><span style="font-style:italic"></span>    setConditions();         <span style="font-style:italic">// set measurment conditions again (reflect change during measure)
+</span><span style="font-style:italic"></span>    dataAnalize();           <span style="font-style:italic">// analize data
+</span><span style="font-style:italic"></span>    writeCommonImage();      <span style="font-style:italic">// write fixed screen image (2.6ms)
+</span><span style="font-style:italic"></span>    plotData();              <span style="font-style:italic">// plot waveform (10-18ms)
+</span><span style="font-style:italic"></span>    dispInf();               <span style="font-style:italic">// display information (6.5-8.5ms)
+</span><span style="font-style:italic"></span>    oled.display();          <span style="font-style:italic">// send screen buffer to OLED (37ms)
+</span><span style="font-style:italic"></span>    saveEEPROM();            <span style="font-style:italic">// save settings to EEPROM if necessary
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">while</span> (hold == true) {   <span style="font-style:italic">// wait if Hold flag ON
+</span><span style="font-style:italic"></span>        dispHold();
+        <span style="font-weight:bold">if</span> (inMode &gt; 0) {         <span style="font-style:italic">// if not DC mode,
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (acZero() == 1) {  <span style="font-style:italic">// if offset adj. executed
+</span><span style="font-style:italic"></span>                scopeP = 0;       <span style="font-style:italic">// Restore the scope position of select to vertical sensitivity
+</span><span style="font-style:italic"></span>                hold = false;     <span style="font-style:italic">// cancel hold
+</span><span style="font-style:italic"></span>            }
+            delay(10);
+        }  <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>    }
+}
+
+<span style="">int</span> acZero() {                           <span style="font-style:italic">// AC range offset correction
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (digitalRead(8) == LOW) {         <span style="font-style:italic">// if select pushed
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (vRange &gt;= 5) {               <span style="font-style:italic">// range = 5V or less
+</span><span style="font-style:italic"></span>            offset5Vac = dataAve / 10;   <span style="font-style:italic">// adjust the offset
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {                         <span style="font-style:italic">// range more than 5V
+</span><span style="font-style:italic"></span>            offset50Vac = dataAve / 10;  <span style="font-style:italic">// adjust the offset
+</span><span style="font-style:italic"></span>        }
+        saveEEPROM();  <span style="font-style:italic">// Saving the correction in EEPROM
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">return</span> 1;      <span style="font-style:italic">// adjusted
+</span><span style="font-style:italic"></span>    }
+    <span style="font-weight:bold">return</span> 0;  <span style="font-style:italic">// no adjust
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> setInputOffset() {     <span style="font-style:italic">// set offset circuit
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (inMode &gt;= 1) {      <span style="font-style:italic">// if AC mode
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (att10x == 1) {  <span style="font-style:italic">// 10X-att enabled
+</span><span style="font-style:italic"></span>            pull5V(R_82k);  <span style="font-style:italic">// pull 5V by 82k
+</span><span style="font-style:italic"></span>            hiZ(R_820k);
+        } <span style="font-weight:bold">else</span> {  <span style="font-style:italic">// 10X-att disable
+</span><span style="font-style:italic"></span>            hiZ(R_82k);
+            pull5V(R_820k);  <span style="font-style:italic">// pull 5V by 820k
+</span><span style="font-style:italic"></span>        }
+    } <span style="font-weight:bold">else</span> {          <span style="font-style:italic">// DC mode
+</span><span style="font-style:italic"></span>        hiZ(R_820k);  <span style="font-style:italic">// Hi-Z
+</span><span style="font-style:italic"></span>        hiZ(R_82k);   <span style="font-style:italic">// Hi-Z
+</span><span style="font-style:italic"></span>    }
+}
+
+<span style="">void</span> hiZ(<span style="">int</span> n) {          <span style="font-style:italic">// set the pin to hi-z
+</span><span style="font-style:italic"></span>    pinMode(n, INPUT);     <span style="font-style:italic">// set INPUT
+</span><span style="font-style:italic"></span>    digitalWrite(n, LOW);  <span style="font-style:italic">// no pull up
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> pull5V(<span style="">int</span> n) {        <span style="font-style:italic">// pull 5V through resistor
+</span><span style="font-style:italic"></span>    pinMode(n, OUTPUT);     <span style="font-style:italic">// set OUTPUT
+</span><span style="font-style:italic"></span>    digitalWrite(n, HIGH);  <span style="font-style:italic">// OUTPUT HIGH
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> pullGND(<span style="">int</span> n) {      <span style="font-style:italic">// pull GND through resistor
+</span><span style="font-style:italic"></span>    pinMode(n, OUTPUT);    <span style="font-style:italic">// set OUTPUT
+</span><span style="font-style:italic"></span>    digitalWrite(n, LOW);  <span style="font-style:italic">// output LOW
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> setConditions() {            <span style="font-style:italic">// measuring condition setting
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (digitalRead(7) == LOW) {  <span style="font-style:italic">// Read the input mode switch to set AC/DC
+</span><span style="font-style:italic"></span>        inMode = 1;               <span style="font-style:italic">// AC mode
+</span><span style="font-style:italic"></span>    } <span style="font-weight:bold">else</span> {
+        inMode = 0;  <span style="font-style:italic">// DC mode
+</span><span style="font-style:italic"></span>    }
+
+    <span style="font-style:italic">// get range name from PROGMEM
+</span><span style="font-style:italic"></span>    strcpy_P(hScale, (<span style="">char</span>*)pgm_read_word(&amp;(hstring_table[hRange])));  <span style="font-style:italic">// H range name
+</span><span style="font-style:italic"></span>    strcpy_P(vScale, (<span style="">char</span>*)pgm_read_word(&amp;(vstring_table[vRange])));  <span style="font-style:italic">// V range name
+</span><span style="font-style:italic"></span>
+    <span style="font-weight:bold">switch</span> (vRange) {    <span style="font-style:italic">// setting of Vrange
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">case</span> 0:          <span style="font-style:italic">// deleted Auto50V range
+</span><span style="font-style:italic"></span>            att10x = 1;  <span style="font-style:italic">// use input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 1:          <span style="font-style:italic">// deleted Auto 5V range
+</span><span style="font-style:italic"></span>            att10x = 0;  <span style="font-style:italic">// no attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 2:  <span style="font-style:italic">// 50V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 50.0 / lsb50V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 5000;       <span style="font-style:italic">// vartical scale (set100x value)
+</span><span style="font-style:italic"></span>                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset50Vac + 25.0 / lsb50Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 2500;                       <span style="font-style:italic">// vartical scale (set100x value)
+</span><span style="font-style:italic"></span>                rangeMin = offset50Vac - 25.0 / lsb50Vac;
+                rangeMinDisp = -2500;
+            }
+            att10x = 1;  <span style="font-style:italic">// use input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 3:  <span style="font-style:italic">// 20V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 20.0 / lsb50V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 2000;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset50Vac + 10.0 / lsb50Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 1000;
+                rangeMin = offset50Vac - 10.0 / lsb50Vac;
+                rangeMinDisp = -1000;
+            }
+            att10x = 1;  <span style="font-style:italic">// use input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 4:  <span style="font-style:italic">// 10V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 10.0 / lsb50V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 1000;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset50Vac + 5.0 / lsb50Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 500;
+                rangeMin = offset50Vac - 5.0 / lsb50Vac;
+                rangeMinDisp = -500;
+            }
+            att10x = 1;  <span style="font-style:italic">// use input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 5:  <span style="font-style:italic">// 5V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 5.0 / lsb5V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 500;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset5Vac + 2.5 / lsb5Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 250;
+                rangeMin = offset5Vac - 2.5 / lsb5Vac;
+                rangeMinDisp = -250;
+            }
+            att10x = 0;  <span style="font-style:italic">// no input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 6:  <span style="font-style:italic">// 2V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 2.0 / lsb5V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 200;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset5Vac + 1.0 / lsb5Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 100;
+                rangeMin = offset5Vac - 1.0 / lsb5Vac;
+                rangeMinDisp = -100;
+            }
+            att10x = 0;  <span style="font-style:italic">// no input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 7:  <span style="font-style:italic">// 1V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 1.0 / lsb5V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 100;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset5Vac + 0.5 / lsb5Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 50;
+                rangeMin = offset5Vac - 0.5 / lsb5Vac;
+                rangeMinDisp = -50;
+            }
+            att10x = 0;  <span style="font-style:italic">// no input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 8:  <span style="font-style:italic">// 0.5V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 0.5 / lsb5V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 50;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset5Vac + 0.25 / lsb5Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 25;
+                rangeMin = offset5Vac - 0.25 / lsb5Vac;
+                rangeMinDisp = -25;
+            }
+            att10x = 0;  <span style="font-style:italic">// no input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 9:  <span style="font-style:italic">// 0.2V range
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode == 0) {
+                rangeMax = 0.2 / lsb5V;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 20;
+                rangeMin = 0;
+                rangeMinDisp = 0;
+            } <span style="font-weight:bold">else</span> {
+                rangeMax = offset5Vac + 0.1 / lsb5Vac;  <span style="font-style:italic">// set full scale pixcel count number
+</span><span style="font-style:italic"></span>                rangeMaxDisp = 10;
+                rangeMin = offset5Vac - 0.1 / lsb5Vac;
+                rangeMinDisp = -10;
+            }
+            att10x = 0;  <span style="font-style:italic">// no input attenuator
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">break</span>;
+    }
+}
+
+<span style="">void</span> writeCommonImage() {                   <span style="font-style:italic">// Common screen image drawing
+</span><span style="font-style:italic"></span>    oled.clearDisplay();                    <span style="font-style:italic">// erase all(0.4ms)
+</span><span style="font-style:italic"></span>    oled.setTextColor(WHITE);               <span style="font-style:italic">// write in white character
+</span><span style="font-style:italic"></span>    oled.drawFastVLine(26, 9, 55, WHITE);   <span style="font-style:italic">// left vartical line
+</span><span style="font-style:italic"></span>    oled.drawFastVLine(127, 9, 3, WHITE);   <span style="font-style:italic">// right vrtical line up
+</span><span style="font-style:italic"></span>    oled.drawFastVLine(127, 61, 3, WHITE);  <span style="font-style:italic">// right vrtical line bottom
+</span><span style="font-style:italic"></span>
+    oled.drawFastHLine(24, 9, 7, WHITE);  <span style="font-style:italic">// Max value auxiliary mark
+</span><span style="font-style:italic"></span>    oled.drawFastHLine(24, 36, 2, WHITE);
+    oled.drawFastHLine(24, 63, 7, WHITE);
+
+    oled.drawFastHLine(51, 9, 3, WHITE);  <span style="font-style:italic">// Max value auxiliary mark
+</span><span style="font-style:italic"></span>    oled.drawFastHLine(51, 63, 3, WHITE);
+
+    oled.drawFastHLine(76, 9, 3, WHITE);  <span style="font-style:italic">// Max value auxiliary mark
+</span><span style="font-style:italic"></span>    oled.drawFastHLine(76, 63, 3, WHITE);
+
+    oled.drawFastHLine(101, 9, 3, WHITE);  <span style="font-style:italic">// Max value auxiliary mark
+</span><span style="font-style:italic"></span>    oled.drawFastHLine(101, 63, 3, WHITE);
+
+    oled.drawFastHLine(123, 9, 5, WHITE);  <span style="font-style:italic">// right side Max value auxiliary mark
+</span><span style="font-style:italic"></span>    oled.drawFastHLine(123, 63, 5, WHITE);
+
+    <span style="font-weight:bold">for</span> (<span style="">int</span> x = 26; x &lt;= 128; x += 5) {
+        oled.drawFastHLine(x, 36, 2, WHITE);  <span style="font-style:italic">// Draw the center line (horizontal line) with a dotted line
+</span><span style="font-style:italic"></span>    }
+    <span style="font-weight:bold">for</span> (<span style="">int</span> x = (127 - 25); x &gt; 30; x -= 25) {
+        <span style="font-weight:bold">for</span> (<span style="">int</span> y = 10; y &lt; 63; y += 5) {
+            oled.drawFastVLine(x, y, 2, WHITE);  <span style="font-style:italic">// Draw 3 vertical lines with dotted lines
+</span><span style="font-style:italic"></span>        }
+    }
+}
+
+<span style="">void</span> readWave() {       <span style="font-style:italic">// Record waveform to memory array
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (att10x == 1) {  <span style="font-style:italic">// if 1/10 attenuator required
+</span><span style="font-style:italic"></span>        pullGND(R_12k);
+    } <span style="font-weight:bold">else</span> {  <span style="font-style:italic">// if not required
+</span><span style="font-style:italic"></span>        hiZ(R_12k);
+    }
+    switchPushed = false;  <span style="font-style:italic">// Clear switch operation flag
+</span><span style="font-style:italic"></span>
+    <span style="font-weight:bold">switch</span> (hRange) {                             <span style="font-style:italic">// set recording conditions in accordance with the range number
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">case</span> 0:                                   <span style="font-style:italic">// 200ms range
+</span><span style="font-style:italic"></span>            timeExec = 1600 + 60;                 <span style="font-style:italic">// Approximate execution time(ms) Used for countdown until saving to EEPROM
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112us
+</span><span style="font-style:italic"></span>                delayMicroseconds(7888);          <span style="font-style:italic">// timing adjustment
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (switchPushed == true) {       <span style="font-style:italic">// if any switch touched
+</span><span style="font-style:italic"></span>                    switchPushed = false;
+                    <span style="font-weight:bold">break</span>;  <span style="font-style:italic">// abandon record(this improve response)
+</span><span style="font-style:italic"></span>                }
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 1:                                   <span style="font-style:italic">// 100ms range
+</span><span style="font-style:italic"></span>            timeExec = 800 + 60;                  <span style="font-style:italic">// Approximate execution time(ms) Used for countdown until saving to EEPROM
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112us
+</span><span style="font-style:italic"></span>                delayMicroseconds(3860);          <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (switchPushed == true) {       <span style="font-style:italic">// if any switch touched
+</span><span style="font-style:italic"></span>                    switchPushed = false;
+                    <span style="font-weight:bold">break</span>;  <span style="font-style:italic">// abandon record(this improve response)
+</span><span style="font-style:italic"></span>                }
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 2:                                   <span style="font-style:italic">// 50ms range
+</span><span style="font-style:italic"></span>            timeExec = 400 + 60;                  <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112us
+</span><span style="font-style:italic"></span>                delayMicroseconds(1880);          <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (switchPushed == true) {       <span style="font-style:italic">// if any switch touched
+</span><span style="font-style:italic"></span>                    <span style="font-weight:bold">break</span>;                        <span style="font-style:italic">// abandon record(this improve response)
+</span><span style="font-style:italic"></span>                }
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 3:                                   <span style="font-style:italic">// 20ms range
+</span><span style="font-style:italic"></span>            timeExec = 160 + 60;                  <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112us
+</span><span style="font-style:italic"></span>                delayMicroseconds(686);           <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (switchPushed == true) {       <span style="font-style:italic">// if any switch touched
+</span><span style="font-style:italic"></span>                    <span style="font-weight:bold">break</span>;                        <span style="font-style:italic">// abandon record(this improve response)
+</span><span style="font-style:italic"></span>                }
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 4:                                   <span style="font-style:italic">// 10ms range
+</span><span style="font-style:italic"></span>            timeExec = 80 + 60;                   <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112us
+</span><span style="font-style:italic"></span>                delayMicroseconds(287);           <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (switchPushed == true) {       <span style="font-style:italic">// if any switch touched
+</span><span style="font-style:italic"></span>                    <span style="font-weight:bold">break</span>;                        <span style="font-style:italic">// abandon record(this improve response)
+</span><span style="font-style:italic"></span>                }
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 5:                                   <span style="font-style:italic">// 5ms range
+</span><span style="font-style:italic"></span>            timeExec = 40 + 60;                   <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112μs
+</span><span style="font-style:italic"></span>                delayMicroseconds(87);            <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (switchPushed == true) {       <span style="font-style:italic">// if any switch touched
+</span><span style="font-style:italic"></span>                    <span style="font-weight:bold">break</span>;                        <span style="font-style:italic">// abandon record(this improve response)
+</span><span style="font-style:italic"></span>                }
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 6:                                   <span style="font-style:italic">// 2ms range
+</span><span style="font-style:italic"></span>            timeExec = 16 + 60;                   <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x06;               <span style="font-style:italic">// dividing ratio = 64 (0x1=2, 0x2=4, 0x3=8, 0x4=16, 0x5=32, 0x6=64, 0x7=128)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 56us
+</span><span style="font-style:italic"></span>                delayMicroseconds(23);            <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 7:                                   <span style="font-style:italic">// 1ms range
+</span><span style="font-style:italic"></span>            timeExec = 8 + 60;                    <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x05;               <span style="font-style:italic">// dividing ratio = 16 (0x1=2, 0x2=4, 0x3=8, 0x4=16, 0x5=32, 0x6=64, 0x7=128)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 28us
+</span><span style="font-style:italic"></span>                delayMicroseconds(10);            <span style="font-style:italic">// timing adjustmet tuned
+</span><span style="font-style:italic"></span>            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 8:                                   <span style="font-style:italic">// 500us range
+</span><span style="font-style:italic"></span>            timeExec = 4 + 60;                    <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x04;               <span style="font-style:italic">// dividing ratio = 16(0x1=2, 0x2=4, 0x3=8, 0x4=16, 0x5=32, 0x6=64, 0x7=128)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 16us
+</span><span style="font-style:italic"></span>                delayMicroseconds(4);             <span style="font-style:italic">// timing adjustmet
+</span><span style="font-style:italic"></span>                <span style="font-style:italic">// time fine adjustment 0.0625 x 8 = 0.5us（nop=0.0625us @16MHz)
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+            }
+            <span style="font-weight:bold">break</span>;
+
+        <span style="font-weight:bold">case</span> 9:
+        <span style="font-weight:bold">case</span> 10:
+        <span style="font-weight:bold">case</span> 11:                                  <span style="font-style:italic">// common 200, 100, 50us range
+</span><span style="font-style:italic"></span>            timeExec = 2 + 60;                    <span style="font-style:italic">// Approximate execution time(ms)
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x02;               <span style="font-style:italic">// dividing ratio = 4(0x1=2, 0x2=4, 0x3=8, 0x4=16, 0x5=32, 0x6=64, 0x7=128)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// up to rec buffer size
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 6us
+</span><span style="font-style:italic"></span>                <span style="font-style:italic">// time fine adjustment 0.0625 * 20 = 1.25us (nop=0.0625us @16MHz)
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+                <span style="font-weight:bold">asm</span>(<span style="font-style:italic">&#34;nop&#34;</span>);
+            }
+            <span style="font-weight:bold">break</span>;
+    }
+}
+
+<span style="">void</span> dataAnalize() {  <span style="font-style:italic">// get various information from wave form
+</span><span style="font-style:italic"></span>    <span style="">long</span> d;
+    <span style="">long</span> sum = 0;
+
+    <span style="font-style:italic">// search max and min value
+</span><span style="font-style:italic"></span>    dataMin = 1023;                       <span style="font-style:italic">// min value initialize to big number
+</span><span style="font-style:italic"></span>    dataMax = 0;                          <span style="font-style:italic">// max value initialize to small number
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// serach max min value
+</span><span style="font-style:italic"></span>        d = waveBuff[i];
+        sum = sum + d;
+        <span style="font-weight:bold">if</span> (d &lt; dataMin) {  <span style="font-style:italic">// update min
+</span><span style="font-style:italic"></span>            dataMin = d;
+        }
+        <span style="font-weight:bold">if</span> (d &gt; dataMax) {  <span style="font-style:italic">// updata max
+</span><span style="font-style:italic"></span>            dataMax = d;
+        }
+    }
+
+    <span style="font-style:italic">// calculate average
+</span><span style="font-style:italic"></span>    dataAve = (sum + 10) / 20;  <span style="font-style:italic">// Average value calculation (calculated by 10 times to improve accuracy)
+</span><span style="font-style:italic"></span>
+    <span style="font-style:italic">// rms value calc.
+</span><span style="font-style:italic"></span>    sum = 0;
+    <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {       <span style="font-style:italic">// to all buffer
+</span><span style="font-style:italic"></span>        d = waveBuff[i] - (dataAve + 5) / 10;  <span style="font-style:italic">// Calculate with a raw value to prevent overflow (no more than 10 times)
+</span><span style="font-style:italic"></span>        sum += d * d;                          <span style="font-style:italic">// Square sum integral
+</span><span style="font-style:italic"></span>    }
+
+    dataRms = sqrt(sum / REC_LENG);  <span style="font-style:italic">// get rms value (10 times)
+</span><span style="font-style:italic"></span>
+    <span style="font-style:italic">// Trigger position search
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">for</span> (trigP = ((REC_LENG / 2) - 51); trigP &lt; ((REC_LENG / 2) + 50); trigP++) {  <span style="font-style:italic">// Find the points that straddle the median at the center ± 50 of the data range
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (trigD == 0) {                                                          <span style="font-style:italic">// if trigger direction is positive
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((waveBuff[trigP - 1] &lt; (dataMax + dataMin) / 2) &amp;&amp; (waveBuff[trigP] &gt;= (dataMax + dataMin) / 2)) {
+                <span style="font-weight:bold">break</span>;  <span style="font-style:italic">// positive trigger position found !
+</span><span style="font-style:italic"></span>            }
+        } <span style="font-weight:bold">else</span> {  <span style="font-style:italic">// trigger direction is negative
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((waveBuff[trigP - 1] &gt; (dataMax + dataMin) / 2) &amp;&amp; (waveBuff[trigP] &lt;= (dataMax + dataMin) / 2)) {
+                <span style="font-weight:bold">break</span>;  <span style="font-style:italic">// negative trigger poshition found !
+</span><span style="font-style:italic"></span>            }
+        }
+    }
+    trigSync = true;
+    <span style="font-weight:bold">if</span> (trigP &gt;= ((REC_LENG / 2) + 50)) {  <span style="font-style:italic">// If the trigger is not found in range
+</span><span style="font-style:italic"></span>        trigP = (REC_LENG / 2);            <span style="font-style:italic">// Set it to the center for the time being
+</span><span style="font-style:italic"></span>        trigSync = false;                  <span style="font-style:italic">// set Unsync display flag
+</span><span style="font-style:italic"></span>    }
+    <span style="font-weight:bold">if</span> ((dataMax - dataMin) &lt;= MIN_TRIG_SWING) {  <span style="font-style:italic">// amplitude of the waveform smaller than the specified value
+</span><span style="font-style:italic"></span>        trigSync = false;                         <span style="font-style:italic">// set Unsync display flag
+</span><span style="font-style:italic"></span>    }
+    freqDuty();
+}
+
+<span style="">void</span> freqDuty() {        <span style="font-style:italic">// detect frequency and duty cycle value from waveform data
+</span><span style="font-style:italic"></span>    <span style="">int</span> swingCenter;     <span style="font-style:italic">// center of wave (half of p-p)
+</span><span style="font-style:italic"></span>    <span style="">float</span> p0 = 0;        <span style="font-style:italic">// 1-st posi edge
+</span><span style="font-style:italic"></span>    <span style="">float</span> p1 = 0;        <span style="font-style:italic">// total length of cycles
+</span><span style="font-style:italic"></span>    <span style="">float</span> p2 = 0;        <span style="font-style:italic">// total length of pulse high time
+</span><span style="font-style:italic"></span>    <span style="">float</span> pFine = 0;     <span style="font-style:italic">// fine position (0-1.0)
+</span><span style="font-style:italic"></span>    <span style="">float</span> lastPosiEdge;  <span style="font-style:italic">// last positive edge position
+</span><span style="font-style:italic"></span>
+    <span style="">float</span> pPeriod;  <span style="font-style:italic">// pulse period
+</span><span style="font-style:italic"></span>    <span style="">float</span> pWidth;   <span style="font-style:italic">// pulse width
+</span><span style="font-style:italic"></span>
+    <span style="">int</span> p1Count = 0;  <span style="font-style:italic">// wave cycle count
+</span><span style="font-style:italic"></span>    <span style="">int</span> p2Count = 0;  <span style="font-style:italic">// High time count
+</span><span style="font-style:italic"></span>
+    boolean a0Detected = false;
+    <span style="font-style:italic">//  boolean b0Detected = false;
+</span><span style="font-style:italic"></span>    boolean posiSerch = true;  <span style="font-style:italic">// true when serching posi edge
+</span><span style="font-style:italic"></span>
+    swingCenter = (3 * (dataMin + dataMax)) / 2;  <span style="font-style:italic">// calculate wave center value
+</span><span style="font-style:italic"></span>
+    <span style="font-weight:bold">for</span> (<span style="">int</span> i = 1; i &lt; REC_LENG - 2; i++) {                                                                       <span style="font-style:italic">// scan all over the buffer
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (posiSerch == true) {                                                                                   <span style="font-style:italic">// posi slope (frequency serch)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((sum3(i) &lt;= swingCenter) &amp;&amp; (sum3(i + 1) &gt; swingCenter)) {                                         <span style="font-style:italic">// if across the center when rising (+-3data used to eliminate noize)
+</span><span style="font-style:italic"></span>                pFine = (<span style="">float</span>)(swingCenter - sum3(i)) / ((swingCenter - sum3(i)) + (sum3(i + 1) - swingCenter));  <span style="font-style:italic">// fine cross point calc.
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (a0Detected == false) {                                                                         <span style="font-style:italic">// if 1-st cross
+</span><span style="font-style:italic"></span>                    a0Detected = true;                                                                             <span style="font-style:italic">// set find flag
+</span><span style="font-style:italic"></span>                    p0 = i + pFine;                                                                                <span style="font-style:italic">// save this position as startposition
+</span><span style="font-style:italic"></span>                } <span style="font-weight:bold">else</span> {
+                    p1 = i + pFine - p0;  <span style="font-style:italic">// record length (length of n*cycle time)
+</span><span style="font-style:italic"></span>                    p1Count++;
+                }
+                lastPosiEdge = i + pFine;  <span style="font-style:italic">// record location for Pw calcration
+</span><span style="font-style:italic"></span>                posiSerch = false;
+            }
+        } <span style="font-weight:bold">else</span> {                                                            <span style="font-style:italic">// nega slope serch (duration serch)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((sum3(i) &gt;= swingCenter) &amp;&amp; (sum3(i + 1) &lt; swingCenter)) {  <span style="font-style:italic">// if across the center when falling (+-3data used to eliminate noize)
+</span><span style="font-style:italic"></span>                pFine = (<span style="">float</span>)(sum3(i) - swingCenter) / ((sum3(i) - swingCenter) + (swingCenter - sum3(i + 1)));
+                <span style="font-weight:bold">if</span> (a0Detected == true) {
+                    p2 = p2 + (i + pFine - lastPosiEdge);  <span style="font-style:italic">// calucurate pulse width and accumurate it
+</span><span style="font-style:italic"></span>                    p2Count++;
+                }
+                posiSerch = true;
+            }
+        }
+    }
+
+    pPeriod = p1 / p1Count;  <span style="font-style:italic">// pulse period
+</span><span style="font-style:italic"></span>    pWidth = p2 / p2Count;   <span style="font-style:italic">// palse width
+</span><span style="font-style:italic"></span>
+    waveFreq = 1.0 / ((pgm_read_float(hRangeValue + hRange) * pPeriod) / 25.0);  <span style="font-style:italic">// frequency
+</span><span style="font-style:italic"></span>    waveDuty = 100.0 * pWidth / pPeriod;                                         <span style="font-style:italic">// duty ratio
+</span><span style="font-style:italic"></span>}
+
+<span style="">int</span> sum3(<span style="">int</span> k) {  <span style="font-style:italic">// Sum of before and after and own value
+</span><span style="font-style:italic"></span>    <span style="">int</span> m = waveBuff[k - 1] + waveBuff[k] + waveBuff[k + 1];
+    <span style="font-weight:bold">return</span> m;
+}
+
+<span style="">void</span> startScreen() {  <span style="font-style:italic">// Staru up screen
+</span><span style="font-style:italic"></span>    oled.clearDisplay();
+    oled.setTextSize(2);  <span style="font-style:italic">// at double size character
+</span><span style="font-style:italic"></span>    oled.setTextColor(WHITE);
+    oled.setCursor(10, 15);
+    oled.println(F(<span style="font-style:italic">&#34;BadGateWay&#34;</span>));                 <span style="font-style:italic">// Title
+</span><span style="font-style:italic"></span>    oled.setCursor(10, 35) oled.println(F(<span style="font-style:italic">&#34;V2&#34;</span>));  <span style="font-style:italic">// Version
+</span><span style="font-style:italic"></span>    oled.display();                                <span style="font-style:italic">// actual display here
+</span><span style="font-style:italic"></span>    delay(1500);
+    oled.clearDisplay();
+    oled.setTextSize(1);  <span style="font-style:italic">// After this, standard font size
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> dispHold() {                         <span style="font-style:italic">// display &#34;Hold&#34;
+</span><span style="font-style:italic"></span>    oled.fillRect(42, 11, 24, 8, BLACK);  <span style="font-style:italic">// black paint 4 characters
+</span><span style="font-style:italic"></span>    oled.setCursor(42, 11);
+    oled.print(F(<span style="font-style:italic">&#34;Hold&#34;</span>));  <span style="font-style:italic">// Hold
+</span><span style="font-style:italic"></span>    oled.display();         <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> dispInf() {  <span style="font-style:italic">//  Display of various information
+</span><span style="font-style:italic"></span>    <span style="">float</span> volt;
+    <span style="font-style:italic">// display DC/AC couple mode
+</span><span style="font-style:italic"></span>    oled.setCursor(0, 0);
+    <span style="font-weight:bold">if</span> (inMode == 0) {
+        oled.print(F(<span style="font-style:italic">&#34;DC&#34;</span>));
+    } <span style="font-weight:bold">else</span> {
+        oled.print(F(<span style="font-style:italic">&#34;AC&#34;</span>));
+    }
+
+    <span style="font-style:italic">// vertical sensitivity
+</span><span style="font-style:italic"></span>    oled.setCursor(15, 0);                     <span style="font-style:italic">// around top left
+</span><span style="font-style:italic"></span>    oled.print(vScale);                        <span style="font-style:italic">// vertical sensitivity value
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (scopeP == 0) {                         <span style="font-style:italic">// if scoped
+</span><span style="font-style:italic"></span>        oled.drawFastHLine(13, 7, 27, WHITE);  <span style="font-style:italic">// display scoped mark at the bottom
+</span><span style="font-style:italic"></span>        oled.drawFastVLine(13, 5, 2, WHITE);
+        oled.drawFastVLine(39, 5, 2, WHITE);
+    }
+
+    <span style="font-style:italic">// horizontal sweep speed
+</span><span style="font-style:italic"></span>    oled.setCursor(42, 0);                     <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>    oled.print(hScale);                        <span style="font-style:italic">// display sweep speed (time/div)
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (scopeP == 1) {                         <span style="font-style:italic">// if scoped
+</span><span style="font-style:italic"></span>        oled.drawFastHLine(40, 7, 33, WHITE);  <span style="font-style:italic">// display scoped mark
+</span><span style="font-style:italic"></span>        oled.drawFastVLine(40, 5, 2, WHITE);
+        oled.drawFastVLine(72, 5, 2, WHITE);
+    }
+
+    <span style="font-style:italic">// trigger polarity
+</span><span style="font-style:italic"></span>    oled.setCursor(75, 0);       <span style="font-style:italic">// at top center
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (trigD == 0) {            <span style="font-style:italic">// if positive
+</span><span style="font-style:italic"></span>        oled.print(<span style="">char</span>(0x18));  <span style="font-style:italic">// up mark
+</span><span style="font-style:italic"></span>    } <span style="font-weight:bold">else</span> {
+        oled.print(<span style="">char</span>(0x19));  <span style="font-style:italic">// down mark              ↓
+</span><span style="font-style:italic"></span>    }
+    <span style="font-weight:bold">if</span> (scopeP == 2) {                         <span style="font-style:italic">// if scoped
+</span><span style="font-style:italic"></span>        oled.drawFastHLine(72, 7, 11, WHITE);  <span style="font-style:italic">// display scoped mark
+</span><span style="font-style:italic"></span>        oled.drawFastVLine(72, 5, 2, WHITE);
+        oled.drawFastVLine(82, 5, 2, WHITE);
+    }
+
+    <span style="font-style:italic">// average voltage
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (inMode == 0) {  <span style="font-style:italic">// if DC mode
+</span><span style="font-style:italic"></span>        oled.setCursor(86, 0);
+        oled.print(F(<span style="font-style:italic">&#34;av&#34;</span>));                 <span style="font-style:italic">// av : average
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (att10x == 1) {                   <span style="font-style:italic">// if 10x attenuator is used
+</span><span style="font-style:italic"></span>            volt = dataAve * lsb50V / 10.0;  <span style="font-style:italic">// range value
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {                             <span style="font-style:italic">// no!
+</span><span style="font-style:italic"></span>            volt = dataAve * lsb5V / 10.0;   <span style="font-style:italic">// range value
+</span><span style="font-style:italic"></span>        }
+        <span style="font-weight:bold">if</span> (volt &lt; 10.0) {                 <span style="font-style:italic">// if less than 10V
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// format x.xx
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {                           <span style="font-style:italic">// no! over 10
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 1, chrBuff);  <span style="font-style:italic">// format xx.x
+</span><span style="font-style:italic"></span>        }
+    } <span style="font-weight:bold">else</span> {  <span style="font-style:italic">// AC mode
+</span><span style="font-style:italic"></span>        oled.setCursor(86, 0);
+        oled.print(F(<span style="font-style:italic">&#34;rm&#34;</span>));  <span style="font-style:italic">// rm : rms root mean square
+</span><span style="font-style:italic"></span>
+        <span style="font-weight:bold">if</span> (att10x == 1) {              <span style="font-style:italic">// if 10x attenuator is used
+</span><span style="font-style:italic"></span>            volt = dataRms * lsb50Vac;  <span style="font-style:italic">// 50V range RMS value
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {                        <span style="font-style:italic">// no!
+</span><span style="font-style:italic"></span>            volt = dataRms * lsb5Vac;   <span style="font-style:italic">// 5V range value
+</span><span style="font-style:italic"></span>        }
+
+        <span style="font-weight:bold">if</span> (volt &lt; 10.0) {                 <span style="font-style:italic">// if less than 10V
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// format x.xx
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {                           <span style="font-style:italic">// no!
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 1, chrBuff);  <span style="font-style:italic">// format xx.x
+</span><span style="font-style:italic"></span>        }
+    }
+    oled.setCursor(98, 0);  <span style="font-style:italic">// at top right
+</span><span style="font-style:italic"></span>    oled.print(chrBuff);    <span style="font-style:italic">// display voltage
+</span><span style="font-style:italic"></span>    oled.print(F(<span style="font-style:italic">&#34;V&#34;</span>));
+
+    <span style="font-style:italic">// vartical scale lines
+</span><span style="font-style:italic"></span>    volt = rangeMaxDisp / 100.0;       <span style="font-style:italic">// convert Max voltage
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (vRange &lt;= 3) {                 <span style="font-style:italic">// if range is 20 or more
+</span><span style="font-style:italic"></span>        dtostrf(volt, 4, 0, chrBuff);  <span style="font-style:italic">// format **　
+</span><span style="font-style:italic"></span>    } <span style="font-weight:bold">else</span> {
+        <span style="font-weight:bold">if</span> (vRange &lt;= 7) {
+            dtostrf(volt, 4, 1, chrBuff);  <span style="font-style:italic">// format **.*　
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {
+            dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// format *.**　
+</span><span style="font-style:italic"></span>        }
+    }
+    oled.setCursor(0, 9);
+    oled.print(chrBuff);  <span style="font-style:italic">// display Max value
+</span><span style="font-style:italic"></span>
+    volt = (rangeMaxDisp + rangeMinDisp) / 200.0;  <span style="font-style:italic">// center value calculation
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (vRange &lt;= 3) {                             <span style="font-style:italic">// if range is 20 or more
+</span><span style="font-style:italic"></span>        dtostrf(volt, 4, 0, chrBuff);              <span style="font-style:italic">// format **
+</span><span style="font-style:italic"></span>    } <span style="font-weight:bold">else</span> {
+        <span style="font-weight:bold">if</span> (vRange &lt;= 7) {
+            dtostrf(volt, 4, 1, chrBuff);  <span style="font-style:italic">// format **.*　
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {
+            dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// format *.**　
+</span><span style="font-style:italic"></span>        }
+    }
+    oled.setCursor(0, 33);
+    oled.print(chrBuff);  <span style="font-style:italic">// display central value
+</span><span style="font-style:italic"></span>
+    volt = rangeMinDisp / 100.0;       <span style="font-style:italic">// convart Min voltage
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (vRange &lt;= 3) {                 <span style="font-style:italic">// if range is 20 or more
+</span><span style="font-style:italic"></span>        dtostrf(volt, 4, 0, chrBuff);  <span style="font-style:italic">// format **
+</span><span style="font-style:italic"></span>    } <span style="font-weight:bold">else</span> {
+        <span style="font-weight:bold">if</span> (vRange &lt;= 7) {
+            dtostrf(volt, 4, 1, chrBuff);  <span style="font-style:italic">// format **.*　
+</span><span style="font-style:italic"></span>        } <span style="font-weight:bold">else</span> {
+            dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// format *.**　
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (inMode &gt;= 1) {             <span style="font-style:italic">// compress zero(-0.25 -&gt; -.25)
+</span><span style="font-style:italic"></span>                chrBuff[1] = chrBuff[2];   <span style="font-style:italic">// Remove the beginning zero, reduce the number of characters
+</span><span style="font-style:italic"></span>                chrBuff[2] = chrBuff[3];
+                chrBuff[3] = chrBuff[4];
+                chrBuff[4] = chrBuff[5];
+            }
+        }
+    }
+    oled.setCursor(0, 57);
+    oled.print(chrBuff);  <span style="font-style:italic">// display min value
+</span><span style="font-style:italic"></span>
+    <span style="font-style:italic">// display frequency, duty % or trigger missed
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (trigSync == false) {                  <span style="font-style:italic">// If trigger point can&#39;t found
+</span><span style="font-style:italic"></span>        oled.fillRect(92, 14, 24, 8, BLACK);  <span style="font-style:italic">// black paint 4 character
+</span><span style="font-style:italic"></span>        oled.setCursor(92, 14);               <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>        oled.print(F(<span style="font-style:italic">&#34;unSync&#34;</span>));              <span style="font-style:italic">// dosplay Unsync
+</span><span style="font-style:italic"></span>    } <span style="font-weight:bold">else</span> {
+        oled.fillRect(91, 12, 25, 9, BLACK);  <span style="font-style:italic">// erase Freq area
+</span><span style="font-style:italic"></span>        oled.setCursor(92, 13);               <span style="font-style:italic">// set display locatio
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (waveFreq &lt; 99.9) {                <span style="font-style:italic">// if less than 99.9Hz
+</span><span style="font-style:italic"></span>            oled.print(waveFreq, 1);          <span style="font-style:italic">// display 99.9Hz
+</span><span style="font-style:italic"></span>            oled.print(F(<span style="font-style:italic">&#34;Hz&#34;</span>));
+        } <span style="font-weight:bold">else</span> <span style="font-weight:bold">if</span> (waveFreq &lt; 999.9) {  <span style="font-style:italic">// if less than 999.9Hz
+</span><span style="font-style:italic"></span>            oled.print(waveFreq, 0);    <span style="font-style:italic">// display 999Hz
+</span><span style="font-style:italic"></span>            oled.print(F(<span style="font-style:italic">&#34;Hz&#34;</span>));
+        } <span style="font-weight:bold">else</span> <span style="font-weight:bold">if</span> (waveFreq &lt; 9999.9) {          <span style="font-style:italic">// if less than 9.9999kHz
+</span><span style="font-style:italic"></span>            oled.print((waveFreq / 1000.0), 2);  <span style="font-style:italic">// display 9.99kH
+</span><span style="font-style:italic"></span>            oled.print(F(<span style="font-style:italic">&#34;kH&#34;</span>));
+        } <span style="font-weight:bold">else</span> {                                 <span style="font-style:italic">// if more
+</span><span style="font-style:italic"></span>            oled.print((waveFreq / 1000.0), 1);  <span style="font-style:italic">// display 99.9kH
+</span><span style="font-style:italic"></span>            oled.print(F(<span style="font-style:italic">&#34;kH&#34;</span>));
+        }
+        oled.fillRect(97, 21, 25, 10, BLACK);  <span style="font-style:italic">// erase Freq area (as small as possible)
+</span><span style="font-style:italic"></span>        oled.setCursor(98, 23);                <span style="font-style:italic">// set location
+</span><span style="font-style:italic"></span>        oled.print(waveDuty, 1);               <span style="font-style:italic">// display duty (High level ratio) in %
+</span><span style="font-style:italic"></span>        oled.print(F(<span style="font-style:italic">&#34;%&#34;</span>));
+    }
+    <span style="font-style:italic">//  this for debug (value display on screen)
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">//  oled.fillRect(40, 12, 25, 9, BLACK);    // black paint 4 character
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">//  oled.setCursor(40, 13);                 //
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">//  oled.print(hRange);                     // Display values
+</span><span style="font-style:italic"></span>}
+
+<span style="">void</span> plotData() {  <span style="font-style:italic">// plot waveform on OLED
+</span><span style="font-style:italic"></span>    <span style="">long</span> y1, y2;
+    <span style="font-weight:bold">if</span> (hRange &lt;= 9) {  <span style="font-style:italic">// noromal plot
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">for</span> (<span style="">int</span> x = 0; x &lt;= 98; x++) {
+            y1 = map(waveBuff[x + trigP - 50], rangeMin, rangeMax, 63, 9);  <span style="font-style:italic">// convert to plot address
+</span><span style="font-style:italic"></span>            y1 = constrain(y1, 9, 63);                                      <span style="font-style:italic">// Crush(Saturate) the protruding part
+</span><span style="font-style:italic"></span>            y2 = map(waveBuff[x + trigP - 49], rangeMin, rangeMax, 63, 9);  <span style="font-style:italic">// to address calucurate
+</span><span style="font-style:italic"></span>            y2 = constrain(y2, 9, 63);                                      <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.drawLine(x + 27, y1, x + 28, y2, WHITE);                   <span style="font-style:italic">// connect between point
+</span><span style="font-style:italic"></span>        }
+    } <span style="font-weight:bold">else</span> <span style="font-weight:bold">if</span> (hRange == 10) {  <span style="font-style:italic">// zoom 2X when 100us range
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">for</span> (<span style="">int</span> x = 0; x &lt;= 49; x++) {
+            y1 = map(waveBuff[x + trigP - 25], rangeMin, rangeMax, 63, 9);  <span style="font-style:italic">// convert to plot address
+</span><span style="font-style:italic"></span>            y1 = constrain(y1, 9, 63);                                      <span style="font-style:italic">// Crush(Saturate) the protruding part
+</span><span style="font-style:italic"></span>            y2 = map(waveBuff[x + trigP - 24], rangeMin, rangeMax, 63, 9);  <span style="font-style:italic">// to address calucurate
+</span><span style="font-style:italic"></span>            y2 = constrain(y2, 9, 63);                                      <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.drawLine(x * 2 + 27, y1, x * 2 + 29, y2, WHITE);           <span style="font-style:italic">// connect between point
+</span><span style="font-style:italic"></span>        }
+    } <span style="font-weight:bold">else</span> <span style="font-weight:bold">if</span> (hRange == 11) {  <span style="font-style:italic">// zoom 4x when 50us range
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">for</span> (<span style="">int</span> x = 0; x &lt;= 24; x++) {
+            y1 = map(waveBuff[x + trigP - 13], rangeMin, rangeMax, 63, 9);  <span style="font-style:italic">// convert to plot address
+</span><span style="font-style:italic"></span>            y1 = constrain(y1, 9, 63);                                      <span style="font-style:italic">// Crush(Saturate) the protruding part
+</span><span style="font-style:italic"></span>            y2 = map(waveBuff[x + trigP - 12], rangeMin, rangeMax, 63, 9);  <span style="font-style:italic">// to address calucurate
+</span><span style="font-style:italic"></span>            y2 = constrain(y2, 9, 63);                                      <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.drawLine(x * 4 + 27, y1, x * 4 + 31, y2, WHITE);           <span style="font-style:italic">// connect between point
+</span><span style="font-style:italic"></span>        }
+    }
+}
+
+<span style="">void</span> saveEEPROM() {                        <span style="font-style:italic">// Save the setting value in EEPROM after waiting a while after the button operation.
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (saveTimer &gt; 0) {                   <span style="font-style:italic">// If the timer value is positive,
+</span><span style="font-style:italic"></span>        saveTimer = saveTimer - timeExec;  <span style="font-style:italic">// Timer subtraction
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (saveTimer &lt; 0) {               <span style="font-style:italic">// if time up
+</span><span style="font-style:italic"></span>            EEPROM.write(0, vRange);       <span style="font-style:italic">// save current status to EEPROM
+</span><span style="font-style:italic"></span>            EEPROM.write(1, hRange);
+            EEPROM.write(2, trigD);
+            EEPROM.write(3, scopeP);
+            EEPROM.write(4, offset5Vac &gt;&gt; 8);     <span style="font-style:italic">// AC測定5Vレンジのオフセット値の上位(ビッグエンディアンで記録）
+</span><span style="font-style:italic"></span>            EEPROM.write(5, offset5Vac &amp; 0xFF);   <span style="font-style:italic">// 　　　　　　　　　　　　　　　下位
+</span><span style="font-style:italic"></span>            EEPROM.write(6, offset50Vac &gt;&gt; 8);    <span style="font-style:italic">//      50V                  上位
+</span><span style="font-style:italic"></span>            EEPROM.write(7, offset50Vac &amp; 0xFF);  <span style="font-style:italic">//                           下位
+</span><span style="font-style:italic"></span>        }
+    }
+}
+
+<span style="">void</span> loadEEPROM() {  <span style="font-style:italic">// Read setting values from EEPROM (abnormal values will be corrected to default)
+</span><span style="font-style:italic"></span>    <span style="">int</span> x;
+    x = EEPROM.read(0);        <span style="font-style:italic">// vRange
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 9)) {  <span style="font-style:italic">// if out side 0-9
+</span><span style="font-style:italic"></span>        x = 3;                 <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    vRange = x;
+
+    x = EEPROM.read(1);         <span style="font-style:italic">// hRange
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 11)) {  <span style="font-style:italic">// if out of 0-11
+</span><span style="font-style:italic"></span>        x = 3;                  <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    hRange = x;
+
+    x = EEPROM.read(2);        <span style="font-style:italic">// trigD
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 1)) {  <span style="font-style:italic">// if out of 0-1
+</span><span style="font-style:italic"></span>        x = 1;                 <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    trigD = x;
+
+    x = EEPROM.read(3);        <span style="font-style:italic">// scopeP
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 2)) {  <span style="font-style:italic">// if out of 0-2
+</span><span style="font-style:italic"></span>        x = 1;                 <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    scopeP = x;
+
+    x = EEPROM.read(4);  <span style="font-style:italic">// offset value of AC5V
+</span><span style="font-style:italic"></span>    x = x &lt;&lt; 8;
+    x = x | EEPROM.read(5);
+    <span style="font-weight:bold">if</span> ((x &lt; 350) || (x &gt; 650)) {  <span style="font-style:italic">// if abnormal value, Outside the 350-650 range
+</span><span style="font-style:italic"></span>        x = 594;                   <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    offset5Vac = x;
+
+    x = EEPROM.read(6);  <span style="font-style:italic">// offset value of AC50V
+</span><span style="font-style:italic"></span>    x = x &lt;&lt; 8;
+    x = x | EEPROM.read(7);
+    <span style="font-weight:bold">if</span> ((x &lt; 350) || (x &gt; 650)) {  <span style="font-style:italic">// if abnormal value, Outside the 350-650 range
+</span><span style="font-style:italic"></span>        x = 546;                   <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    offset50Vac = x;
+}
+
+<span style="">void</span> auxFunctions() {             <span style="font-style:italic">// select AUX function
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (digitalRead(8) == LOW) {  <span style="font-style:italic">// if SELECT button pushed, measure battery voltage
+</span><span style="font-style:italic"></span>        battVolt();
+    }
+    <span style="font-weight:bold">if</span> (digitalRead(9) == LOW) {  <span style="font-style:italic">// UP DMM 5V range
+</span><span style="font-style:italic"></span>        dmm5V();
+    }
+    <span style="font-weight:bold">if</span> (digitalRead(10) == LOW) {  <span style="font-style:italic">// DOWN DMM 50V range
+</span><span style="font-style:italic"></span>        dmm50V();
+    }
+}
+
+<span style="">void</span> battVolt() {  <span style="font-style:italic">// Battery voltage measure (this for pen osillo)
+</span><span style="font-style:italic"></span>    <span style="">float</span> volt;
+    <span style="">long</span> x;
+    analogReference(DEFAULT);  <span style="font-style:italic">// ADC full scale set to Vcc
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">while</span> (1) {                <span style="font-style:italic">// do forever
+</span><span style="font-style:italic"></span>        x = 0;
+        <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; 100; i++) {  <span style="font-style:italic">// 100 times
+</span><span style="font-style:italic"></span>            x = x + analogRead(1);       <span style="font-style:italic">// read A1 pin voltage and accumulate
+</span><span style="font-style:italic"></span>        }
+        volt = (x / 100.0) * 5.0 / 1024.0;  <span style="font-style:italic">// convert voltage value
+</span><span style="font-style:italic"></span>        oled.clearDisplay();                <span style="font-style:italic">// all erase screen(0.4ms)
+</span><span style="font-style:italic"></span>        oled.setTextColor(WHITE);           <span style="font-style:italic">// write in white character
+</span><span style="font-style:italic"></span>        oled.setCursor(20, 16);             <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>        oled.setTextSize(1);                <span style="font-style:italic">// standerd size character
+</span><span style="font-style:italic"></span>        oled.println(F(<span style="font-style:italic">&#34;Battery voltage&#34;</span>));
+        oled.setCursor(35, 30);        <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>        oled.setTextSize(2);           <span style="font-style:italic">// double size character
+</span><span style="font-style:italic"></span>        dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// display batterry voltage x.xxV
+</span><span style="font-style:italic"></span>        oled.print(chrBuff);
+        oled.println(F(<span style="font-style:italic">&#34;V&#34;</span>));
+        oled.display();
+        delay(150);
+    }
+}
+
+<span style="">void</span> dmm5V() {  <span style="font-style:italic">// digital voltmeter 5V range
+</span><span style="font-style:italic"></span>    <span style="">float</span> volt, vPP;
+
+    analogReference(INTERNAL);
+
+    <span style="font-weight:bold">while</span> (1) {                    <span style="font-style:italic">// do forever
+</span><span style="font-style:italic"></span>        digitalWrite(13, HIGH);    <span style="font-style:italic">// flash LED
+</span><span style="font-style:italic"></span>        oled.clearDisplay();       <span style="font-style:italic">// erase screen (0.4ms)
+</span><span style="font-style:italic"></span>        oled.setTextColor(WHITE);  <span style="font-style:italic">// write in white character
+</span><span style="font-style:italic"></span>        oled.setCursor(0, 0);      <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>        oled.setTextSize(1);       <span style="font-style:italic">// by standerd size character
+</span><span style="font-style:italic"></span>
+        <span style="font-weight:bold">if</span> (digitalRead(7) == HIGH) {  <span style="font-style:italic">// if awitch is DC mode
+</span><span style="font-style:italic"></span>            hiZ(R_820k);               <span style="font-style:italic">// set measure condition
+</span><span style="font-style:italic"></span>            hiZ(R_82k);
+            hiZ(R_12k);
+
+            volt = analogRead(0) * lsb5V;  <span style="font-style:italic">// DC measure voltage
+</span><span style="font-style:italic"></span>
+            oled.println(F(<span style="font-style:italic">&#34;DC DVM 5V range&#34;</span>));  <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.setCursor(20, 22);              <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.setTextSize(2);                 <span style="font-style:italic">// double size character
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 2, chrBuff);        <span style="font-style:italic">// display voltage x.xxV
+</span><span style="font-style:italic"></span>            oled.print(chrBuff);
+            oled.print(F(<span style="font-style:italic">&#34;V&#34;</span>));
+        } <span style="font-weight:bold">else</span> {             <span style="font-style:italic">// AC mode
+</span><span style="font-style:italic"></span>            pull5V(R_820k);  <span style="font-style:italic">// give offset
+</span><span style="font-style:italic"></span>            hiZ(R_82k);
+            hiZ(R_12k);  <span style="font-style:italic">// Set the attenuator control pin to Hi-z (use as input)
+</span><span style="font-style:italic"></span>
+            ADCSRA = ADCSRA &amp; 0xf8;  <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;  <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>
+            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// record to buffer at 5ms range settings
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112μs
+</span><span style="font-style:italic"></span>                delayMicroseconds(87);            <span style="font-style:italic">// timing adjust
+</span><span style="font-style:italic"></span>            }
+
+            dataAnalize();  <span style="font-style:italic">// analize data
+</span><span style="font-style:italic"></span>
+            volt = dataRms * lsb5Vac;             <span style="font-style:italic">// get RMS value
+</span><span style="font-style:italic"></span>            vPP = (dataMax - dataMin) * lsb5Vac;  <span style="font-style:italic">// get peak to peak voltage
+</span><span style="font-style:italic"></span>
+            oled.println(F(<span style="font-style:italic">&#34;AC DVM 5V range&#34;</span>));
+            oled.setTextSize(2);           <span style="font-style:italic">// double size character
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 2, chrBuff);  <span style="font-style:italic">// foromat x.xx
+</span><span style="font-style:italic"></span>            oled.setCursor(20, 16);        <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.print(chrBuff);           <span style="font-style:italic">// display rms voltage
+</span><span style="font-style:italic"></span>            oled.println(F(<span style="font-style:italic">&#34;Vrms&#34;</span>));
+            dtostrf(vPP, 4, 2, chrBuff);  <span style="font-style:italic">// format x.xx
+</span><span style="font-style:italic"></span>            oled.setCursor(20, 38);       <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.print(chrBuff);          <span style="font-style:italic">// display peak to peak voltage
+</span><span style="font-style:italic"></span>            oled.println(F(<span style="font-style:italic">&#34;Vpp&#34;</span>));
+        }
+        oled.display();         <span style="font-style:italic">// actual display here
+</span><span style="font-style:italic"></span>        digitalWrite(13, LOW);  <span style="font-style:italic">// stop LED flash
+</span><span style="font-style:italic"></span>        delay(150);             <span style="font-style:italic">// wait next measure
+</span><span style="font-style:italic"></span>    }
+}
+
+<span style="">void</span> dmm50V() {  <span style="font-style:italic">// digital voltmeter 50V range
+</span><span style="font-style:italic"></span>    <span style="">float</span> volt, vPP;
+    analogReference(INTERNAL);
+    <span style="font-weight:bold">while</span> (1) {                    <span style="font-style:italic">// do forever,
+</span><span style="font-style:italic"></span>        digitalWrite(13, HIGH);    <span style="font-style:italic">// flash LED
+</span><span style="font-style:italic"></span>        oled.clearDisplay();       <span style="font-style:italic">// erase screen (0.4ms)
+</span><span style="font-style:italic"></span>        oled.setTextColor(WHITE);  <span style="font-style:italic">// write in white character
+</span><span style="font-style:italic"></span>        oled.setCursor(0, 0);      <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>        oled.setTextSize(1);       <span style="font-style:italic">// by standerd size character
+</span><span style="font-style:italic"></span>
+        <span style="font-weight:bold">if</span> (digitalRead(7) == HIGH) {  <span style="font-style:italic">// if awitch is DC mode
+</span><span style="font-style:italic"></span>            hiZ(R_820k);               <span style="font-style:italic">// set measure condition
+</span><span style="font-style:italic"></span>            hiZ(R_82k);
+            pullGND(R_12k);                       <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            volt = analogRead(0) * lsb50V;        <span style="font-style:italic">// measure voltage
+</span><span style="font-style:italic"></span>            oled.println(F(<span style="font-style:italic">&#34;DC DVM 50V range&#34;</span>));  <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.setCursor(20, 22);               <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.setTextSize(2);                  <span style="font-style:italic">// double size character
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 1, chrBuff);         <span style="font-style:italic">// display voltage xx.xV
+</span><span style="font-style:italic"></span>            oled.print(chrBuff);
+            oled.print(F(<span style="font-style:italic">&#34;V&#34;</span>));
+        } <span style="font-weight:bold">else</span> {             <span style="font-style:italic">// AC mode
+</span><span style="font-style:italic"></span>            hiZ(R_820k);     <span style="font-style:italic">// set measure condition
+</span><span style="font-style:italic"></span>            pull5V(R_82k);   <span style="font-style:italic">// pull up
+</span><span style="font-style:italic"></span>            pullGND(R_12k);  <span style="font-style:italic">// att 10x
+</span><span style="font-style:italic"></span>
+            ADCSRA = ADCSRA &amp; 0xf8;               <span style="font-style:italic">// clear bottom 3bit
+</span><span style="font-style:italic"></span>            ADCSRA = ADCSRA | 0x07;               <span style="font-style:italic">// dividing ratio = 128 (default of Arduino）
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// record to buffer at 5ms range settings
+</span><span style="font-style:italic"></span>                waveBuff[i] = analogRead(0);      <span style="font-style:italic">// read and save approx 112μs
+</span><span style="font-style:italic"></span>                delayMicroseconds(87);            <span style="font-style:italic">// timing adjust
+</span><span style="font-style:italic"></span>            }
+
+            dataAnalize();  <span style="font-style:italic">// analize data
+</span><span style="font-style:italic"></span>
+            volt = dataRms * lsb50Vac;             <span style="font-style:italic">// get RMS value
+</span><span style="font-style:italic"></span>            vPP = (dataMax - dataMin) * lsb50Vac;  <span style="font-style:italic">// get peak to peak voltage
+</span><span style="font-style:italic"></span>
+            oled.println(F(<span style="font-style:italic">&#34;AC DVM 50V range&#34;</span>));
+            oled.setTextSize(2);           <span style="font-style:italic">// double size character
+</span><span style="font-style:italic"></span>            dtostrf(volt, 4, 1, chrBuff);  <span style="font-style:italic">// foromat xx.x
+</span><span style="font-style:italic"></span>            oled.setCursor(20, 16);        <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.print(chrBuff);           <span style="font-style:italic">// display rms voltage
+</span><span style="font-style:italic"></span>            oled.println(F(<span style="font-style:italic">&#34;Vrms&#34;</span>));
+            dtostrf(vPP, 4, 1, chrBuff);  <span style="font-style:italic">// format xx.x
+</span><span style="font-style:italic"></span>            oled.setCursor(20, 38);       <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>            oled.print(chrBuff);          <span style="font-style:italic">// display peak to peak voltage
+</span><span style="font-style:italic"></span>            oled.println(F(<span style="font-style:italic">&#34;Vpp&#34;</span>));
+        }
+        oled.display();         <span style="font-style:italic">// actual display here
+</span><span style="font-style:italic"></span>        digitalWrite(13, LOW);  <span style="font-style:italic">// stop LED flash
+</span><span style="font-style:italic"></span>        delay(150);             <span style="font-style:italic">// wait next measure
+</span><span style="font-style:italic"></span>    }
+}
+
+<span style="">void</span> uuPinOutputLow(<span style="">unsigned</span> <span style="">int</span> d, <span style="">unsigned</span> <span style="">int</span> a) {  <span style="font-style:italic">// output LOW at specfied pin
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// PORTx =0, DDRx=1
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// example uuPinOutputLow(0b00000001111000, 0b000000); D3-6 output Low
+</span><span style="font-style:italic"></span>    <span style="">unsigned</span> <span style="">int</span> x;
+    x = d &amp; 0x00FF;
+    PORTD &amp;= ~x;
+    DDRD |= x;
+    x = d &gt;&gt; 8;
+    PORTB &amp;= ~x;
+    DDRB |= x;
+    x = a &amp; 0x003F;
+    PORTC &amp;= ~x;
+    DDRC |= x;
+}
+
+<span style="">void</span> pin2IRQ() {  <span style="font-style:italic">// Pin2(int.0) interrupr handler
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// Pin8,9,10,11 buttons are bundled with diodes and connected to Pin2.
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// So, if any button is pressed, this routine will start.
+</span><span style="font-style:italic"></span>    <span style="">int</span> x;  <span style="font-style:italic">// Port information holding variable
+</span><span style="font-style:italic"></span>
+    x = PINB;  <span style="font-style:italic">// copy port B status
+</span><span style="font-style:italic"></span>
+    <span style="font-weight:bold">if</span> ((x &amp; 0x07) != 0x07) {  <span style="font-style:italic">// if bottom 3bit is not all Hi(any wer pressed)
+</span><span style="font-style:italic"></span>        saveTimer = 5000;      <span style="font-style:italic">// set EEPROM save timer to 5 secnd
+</span><span style="font-style:italic"></span>        switchPushed = true;   <span style="font-style:italic">// switch pushed falag ON
+</span><span style="font-style:italic"></span>    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x01) == 0) {  <span style="font-style:italic">// if select button(Pin8) pushed,
+</span><span style="font-style:italic"></span>        scopeP++;           <span style="font-style:italic">// forward scope position
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (scopeP &gt; 2) {   <span style="font-style:italic">// if upper limit
+</span><span style="font-style:italic"></span>            scopeP = 0;     <span style="font-style:italic">// move to start position
+</span><span style="font-style:italic"></span>        }
+    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x02) == 0) {     <span style="font-style:italic">// if UP button(Pin9) pusshed, and
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (scopeP == 0) {     <span style="font-style:italic">// scoped vertical range
+</span><span style="font-style:italic"></span>            vRange++;          <span style="font-style:italic">// V-range up !
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (vRange &gt; 9) {  <span style="font-style:italic">// if upper limit
+</span><span style="font-style:italic"></span>                vRange = 9;    <span style="font-style:italic">// stay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 1) {      <span style="font-style:italic">// if scoped hrizontal range
+</span><span style="font-style:italic"></span>            hRange++;           <span style="font-style:italic">// H-range up !
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (hRange &gt; 11) {  <span style="font-style:italic">// if upper limit
+</span><span style="font-style:italic"></span>                hRange = 11;    <span style="font-style:italic">// stay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 2) {  <span style="font-style:italic">// if scoped trigger porality
+</span><span style="font-style:italic"></span>            trigD = 0;      <span style="font-style:italic">// set trigger porality to +
+</span><span style="font-style:italic"></span>        }
+    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x04) == 0) {     <span style="font-style:italic">// if DOWN button(Pin10) pusshed, and
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (scopeP == 0) {     <span style="font-style:italic">// scoped vertical range
+</span><span style="font-style:italic"></span>            vRange--;          <span style="font-style:italic">// V-range DOWN
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (vRange &lt; 2) {  <span style="font-style:italic">// if bottom (Auto5V Auto50V have deleted）
+</span><span style="font-style:italic"></span>                vRange = 2;    <span style="font-style:italic">// stay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 1) {     <span style="font-style:italic">// if scoped hrizontal range
+</span><span style="font-style:italic"></span>            hRange--;          <span style="font-style:italic">// H-range DOWN
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (hRange &lt; 0) {  <span style="font-style:italic">// if bottom
+</span><span style="font-style:italic"></span>                hRange = 0;    <span style="font-style:italic">// satay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 2) {  <span style="font-style:italic">// if scoped trigger porality
+</span><span style="font-style:italic"></span>            trigD = 1;      <span style="font-style:italic">// set trigger porality to -
+</span><span style="font-style:italic"></span>        }
+    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x08) == 0) {  <span style="font-style:italic">// if HOLD button(pin11) pushed
+</span><span style="font-style:italic"></span>        hold = !hold;       <span style="font-style:italic">// revers the flag
+</span><span style="font-style:italic"></span>    }
+}
+</code></pre></div>
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      
+
+    </main>
+
+    
+      
+      <script src="/js/coder.min.235666b114443867d43eeb5799d51f6252965e5163f338285e113fa381d3d27e.js" integrity="sha256-I1ZmsRREOGfUPutXmdUfYlKWXlFj8zgoXhE/o4HT0n4="></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </body>
+
+</html>

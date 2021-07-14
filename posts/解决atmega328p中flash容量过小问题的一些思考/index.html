@@ -183,7 +183,7 @@ void (*app_start)(void); void *pBin; void begin() { // allocate the memory for t
   </a>
 </h4>
 <p>在最初的设想中，我们想到可以使用SD卡作为外部拓展。在程序中分配一块内存并将SD卡中的程序加载到该内存中，然后跳转至该位置。</p>
-<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="">void</span> (*app_start)(<span style="">void</span>);
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> (*app_start)(<span style="">void</span>);
 
 <span style="">void</span> *pBin;
 

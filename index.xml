@@ -6,13 +6,22 @@
     <description>Recent content on Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 14 Jul 2021 18:50:35 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 14 Jul 2021 19:19:35 +0800</lastBuildDate><atom:link href="https://Jokernol.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>示波器代码简述</title>
-      <link>https://Jokernol.github.io/posts/%E7%A4%BA%E6%B3%A2%E5%99%A8%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</link>
+      <title>Oscilloscope V2代码简述</title>
+      <link>https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</link>
+      <pubDate>Wed, 14 Jul 2021 19:19:35 +0800</pubDate>
+      
+      <guid>https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</guid>
+      <description>void setup() { pinMode(2, INPUT_PULLUP); // button pushed interrupt (int.0 IRQ)  pinMode(7, INPUT_PULLUP); // AC Mode  pinMode(8, INPUT_PULLUP); // Select button  pinMode(9, INPUT_PULLUP); // Up  pinMode(10, INPUT_PULLUP); // Down  pinMode(11, INPUT_PULLUP); // Hold  pinMode(13, OUTPUT); // LED  pinMode(R_12k, INPUT); // pin12 1/10 attenuator(Off=High-Z, Enable=Output Low)  pinMode(R_820k, INPUT); // A2  pinMode(R_82k, INPUT); // A3  uuPinOutputLow(0b00000001111000, 0b000000); // output low at pin D3-D6  // oled.</description>
+    </item>
+    
+    <item>
+      <title>Oscilloscope V2代码一览</title>
+      <link>https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E4%B8%80%E8%A7%88/</link>
       <pubDate>Wed, 14 Jul 2021 18:50:35 +0800</pubDate>
       
-      <guid>https://Jokernol.github.io/posts/%E7%A4%BA%E6%B3%A2%E5%99%A8%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/</guid>
+      <guid>https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E4%B8%80%E8%A7%88/</guid>
       <description>#include &amp;lt;Adafruit_GFX.h&amp;gt;#include &amp;lt;Wire.h&amp;gt;//#include &amp;lt;Adafruit_SSD1306.h&amp;gt; #include &amp;lt;Adafruit_SH1106.h&amp;gt; // https://github.com/wonho-maker/Adafruit_SH1106#include &amp;lt;EEPROM.h&amp;gt; #define SCREEN_WIDTH 128 // OLED display width #define SCREEN_HEIGHT 64 // OLED display height #define REC_LENG 200 // size of wave data buffer #define MIN_TRIG_SWING 5 // minimum trigger swing.(Display &amp;#34;Unsync&amp;#34; if swing smaller than this value  // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins) #define OLED_RESET -1 // Reset pin # (or -1 if sharing Arduino reset pin) // Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &amp;amp;Wire, OLED_RESET); // device name is oled Adafruit_SH1106 oled(OLED_RESET); // use this when SH1106  #define R_12k 12 // Pin 12 12k ohm #define R_820k 16 // (16=Pin A2) 820k ohm for AC low range #define R_82k 17 // (17=Pin A3) 82k omm for AC high range  // Range name table (those are stored in flash memory) const char vRangeName[10][5] PROGMEM = {&amp;#34;A50V&amp;#34;, &amp;#34;A 5V&amp;#34;, &amp;#34; 50V&amp;#34;, &amp;#34; 20V&amp;#34;, &amp;#34; 10V&amp;#34;, &amp;#34; 5V&amp;#34;, &amp;#34; 2V&amp;#34;, &amp;#34; 1V&amp;#34;, &amp;#34;0.</description>
     </item>
     

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="color-scheme" content="light dark">
+
+    
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; block-all-mixed-content; default-src 'self'; child-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net/; form-action 'self'; frame-src 'self'; img-src 'self'; object-src 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com/ https://cdn.jsdelivr.net/; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; prefetch-src 'self'; connect-src 'self' https://www.google-analytics.com;">
+
+    
+
+    <meta name="author" content="Zhu">
+    <meta name="description" content="void setup() { pinMode(2, INPUT_PULLUP); // button pushed interrupt (int.0 IRQ)  pinMode(7, INPUT_PULLUP); // AC Mode  pinMode(8, INPUT_PULLUP); // Select button  pinMode(9, INPUT_PULLUP); // Up  pinMode(10, INPUT_PULLUP); // Down  pinMode(11, INPUT_PULLUP); // Hold  pinMode(13, OUTPUT); // LED  pinMode(R_12k, INPUT); // pin12 1/10 attenuator(Off=High-Z, Enable=Output Low)  pinMode(R_820k, INPUT); // A2  pinMode(R_82k, INPUT); // A3  uuPinOutputLow(0b00000001111000, 0b000000); // output low at pin D3-D6  // oled.">
+    <meta name="keywords" content="blog,developer,personal">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Oscilloscope V2代码简述"/>
+<meta name="twitter:description" content="void setup() { pinMode(2, INPUT_PULLUP); // button pushed interrupt (int.0 IRQ)  pinMode(7, INPUT_PULLUP); // AC Mode  pinMode(8, INPUT_PULLUP); // Select button  pinMode(9, INPUT_PULLUP); // Up  pinMode(10, INPUT_PULLUP); // Down  pinMode(11, INPUT_PULLUP); // Hold  pinMode(13, OUTPUT); // LED  pinMode(R_12k, INPUT); // pin12 1/10 attenuator(Off=High-Z, Enable=Output Low)  pinMode(R_820k, INPUT); // A2  pinMode(R_82k, INPUT); // A3  uuPinOutputLow(0b00000001111000, 0b000000); // output low at pin D3-D6  // oled."/>
+
+    <meta property="og:title" content="Oscilloscope V2代码简述" />
+<meta property="og:description" content="void setup() { pinMode(2, INPUT_PULLUP); // button pushed interrupt (int.0 IRQ)  pinMode(7, INPUT_PULLUP); // AC Mode  pinMode(8, INPUT_PULLUP); // Select button  pinMode(9, INPUT_PULLUP); // Up  pinMode(10, INPUT_PULLUP); // Down  pinMode(11, INPUT_PULLUP); // Hold  pinMode(13, OUTPUT); // LED  pinMode(R_12k, INPUT); // pin12 1/10 attenuator(Off=High-Z, Enable=Output Low)  pinMode(R_820k, INPUT); // A2  pinMode(R_82k, INPUT); // A3  uuPinOutputLow(0b00000001111000, 0b000000); // output low at pin D3-D6  // oled." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-14T19:19:35+08:00" />
+<meta property="article:modified_time" content="2021-07-14T19:19:35+08:00" />
+
+
+
+    <title>
+  Oscilloscope V2代码简述 · Blog
+</title>
+
+    
+      <link rel="canonical" href="https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/">
+    
+
+    <link rel="preload" href="/fonts/forkawesome-webfont.woff2?v=1.1.7" as="font" type="font/woff2" crossorigin>
+
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.8e23620d1750cfeedee0352c68787c8e99d48d3b2c2d56fa17395cdaf6da25ae.css" integrity="sha256-jiNiDRdQz&#43;7e4DUsaHh8jpnUjTssLVb6Fzlc2vbaJa4=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+      
+        
+        
+        <link rel="stylesheet" href="/css/coder-dark.min.f37febc669ce189201c1918fac1948a254686c8d366a312c2d72b2bb71ad97d1.css" integrity="sha256-83/rxmnOGJIBwZGPrBlIolRobI02ajEsLXKyu3Gtl9E=" crossorigin="anonymous" media="screen" />
+      
+    
+
+    
+
+    
+
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    
+
+    <meta name="generator" content="Hugo 0.85.0" />
+  </head>
+
+  
+  
+    
+  
+  <body class="preload-transitions colorscheme-auto"
+        onload=""
+  >
+    
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      Blog
+    </a>
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://Jokernol.github.io/posts/oscilloscope-v2%E4%BB%A3%E7%A0%81%E7%AE%80%E8%BF%B0/">
+              Oscilloscope V2代码简述
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <time datetime='2021-07-14T19:19:35&#43;08:00'>
+                July 14, 2021
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa fa-clock-o" aria-hidden="true"></i>
+              9-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> setup() {
+    pinMode(2, INPUT_PULLUP);   <span style="font-style:italic">// button pushed interrupt (int.0 IRQ)
+</span><span style="font-style:italic"></span>    pinMode(7, INPUT_PULLUP);   <span style="font-style:italic">// AC Mode
+</span><span style="font-style:italic"></span>    pinMode(8, INPUT_PULLUP);   <span style="font-style:italic">// Select button
+</span><span style="font-style:italic"></span>    pinMode(9, INPUT_PULLUP);   <span style="font-style:italic">// Up
+</span><span style="font-style:italic"></span>    pinMode(10, INPUT_PULLUP);  <span style="font-style:italic">// Down
+</span><span style="font-style:italic"></span>    pinMode(11, INPUT_PULLUP);  <span style="font-style:italic">// Hold
+</span><span style="font-style:italic"></span>    pinMode(13, OUTPUT);        <span style="font-style:italic">// LED
+</span><span style="font-style:italic"></span>    pinMode(R_12k, INPUT);      <span style="font-style:italic">// pin12 1/10 attenuator(Off=High-Z, Enable=Output Low)
+</span><span style="font-style:italic"></span>    pinMode(R_820k, INPUT);     <span style="font-style:italic">// A2
+</span><span style="font-style:italic"></span>    pinMode(R_82k, INPUT);      <span style="font-style:italic">// A3
+</span><span style="font-style:italic"></span>
+    uuPinOutputLow(0b00000001111000, 0b000000);  <span style="font-style:italic">// output low at pin D3-D6
+</span><span style="font-style:italic"></span>                                                 <span style="font-style:italic">//  oled.begin(SSD1306_SWITCHCAPVCC, 0x3C); // select 3C or 3D (set your OLED I2C address)
+</span><span style="font-style:italic"></span>    oled.begin(SH1106_SWITCHCAPVCC, 0x3C);       <span style="font-style:italic">// use this when SH1106
+</span><span style="font-style:italic"></span>
+    auxFunctions();                        <span style="font-style:italic">// Voltage measure (never return)
+</span><span style="font-style:italic"></span>    loadEEPROM();                          <span style="font-style:italic">// read last settings from EEPROM
+</span><span style="font-style:italic"></span>    analogReference(INTERNAL);             <span style="font-style:italic">// ADC full scale = 1.1V
+</span><span style="font-style:italic"></span>    attachInterrupt(0, pin2IRQ, FALLING);  <span style="font-style:italic">// activate IRQ at falling edge mode
+</span><span style="font-style:italic"></span>    startScreen();                         <span style="font-style:italic">// display start message
+</span><span style="font-style:italic"></span>}
+</code></pre></div><p><code>setup()</code> 初始化函数主体</p>
+<p><code>pinMoede()</code>定义了基本的引脚功能，其中2引脚用于中断，12, A2, A3引脚则通过电阻作为衰减器使用。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> uuPinOutputLow(<span style="">unsigned</span> <span style="">int</span> d, <span style="">unsigned</span> <span style="">int</span> a) {  <span style="font-style:italic">// output LOW at specfied pin
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// PORTx =0, DDRx=1
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// example uuPinOutputLow(0b00000001111000, 0b000000); D3-6 output Low
+</span><span style="font-style:italic"></span>    <span style="">unsigned</span> <span style="">int</span> x;
+    x = d &amp; 0x00FF;
+    PORTD &amp;= ~x;
+    DDRD |= x;
+    x = d &gt;&gt; 8;
+    PORTB &amp;= ~x;
+    DDRB |= x;
+    x = a &amp; 0x003F;
+    PORTC &amp;= ~x;
+    DDRC |= x;
+}
+</code></pre></div><p><code>uuPinOutputLow()</code>参考<a href="http://radiopench.blog96.fc2.com/blog-entry-1009.html">radiopench</a>将D3-D6引脚设为低电平来减小电源电流消耗</p>
+<p><code>oled.begin()</code>初始化oled屏幕</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> auxFunctions() {             <span style="font-style:italic">// select AUX function
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> (digitalRead(8) == LOW) {  <span style="font-style:italic">// if SELECT button pushed, measure battery voltage
+</span><span style="font-style:italic"></span>        battVolt();
+    }
+    <span style="font-weight:bold">if</span> (digitalRead(9) == LOW) {  <span style="font-style:italic">// UP DMM 5V range
+</span><span style="font-style:italic"></span>        dmm5V();
+    }
+    <span style="font-weight:bold">if</span> (digitalRead(10) == LOW) {  <span style="font-style:italic">// DOWN DMM 50V range
+</span><span style="font-style:italic"></span>        dmm50V();
+    }
+}
+</code></pre></div><p><code>auxFunctions()</code> 辅助函数，根据引脚状态判断调用不同功能函数</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> loadEEPROM() {  <span style="font-style:italic">// Read setting values from EEPROM (abnormal values will be corrected to default)
+</span><span style="font-style:italic"></span>    <span style="">int</span> x;
+    x = EEPROM.read(0);        <span style="font-style:italic">// vRange
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 9)) {  <span style="font-style:italic">// if out side 0-9
+</span><span style="font-style:italic"></span>        x = 3;                 <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    vRange = x;
+
+    x = EEPROM.read(1);         <span style="font-style:italic">// hRange
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 11)) {  <span style="font-style:italic">// if out of 0-11
+</span><span style="font-style:italic"></span>        x = 3;                  <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    hRange = x;
+
+    x = EEPROM.read(2);        <span style="font-style:italic">// trigD
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 1)) {  <span style="font-style:italic">// if out of 0-1
+</span><span style="font-style:italic"></span>        x = 1;                 <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    trigD = x;
+
+    x = EEPROM.read(3);        <span style="font-style:italic">// scopeP
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">if</span> ((x &lt; 0) || (x &gt; 2)) {  <span style="font-style:italic">// if out of 0-2
+</span><span style="font-style:italic"></span>        x = 1;                 <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    scopeP = x;
+
+    x = EEPROM.read(4);  <span style="font-style:italic">// offset value of AC5V
+</span><span style="font-style:italic"></span>    x = x &lt;&lt; 8;
+    x = x | EEPROM.read(5);
+    <span style="font-weight:bold">if</span> ((x &lt; 350) || (x &gt; 650)) {  <span style="font-style:italic">// if abnormal value, Outside the 350-650 range
+</span><span style="font-style:italic"></span>        x = 594;                   <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    offset5Vac = x;
+
+    x = EEPROM.read(6);  <span style="font-style:italic">// offset value of AC50V
+</span><span style="font-style:italic"></span>    x = x &lt;&lt; 8;
+    x = x | EEPROM.read(7);
+    <span style="font-weight:bold">if</span> ((x &lt; 350) || (x &gt; 650)) {  <span style="font-style:italic">// if abnormal value, Outside the 350-650 range
+</span><span style="font-style:italic"></span>        x = 546;                   <span style="font-style:italic">// default value
+</span><span style="font-style:italic"></span>    }
+    offset50Vac = x;
+}
+</code></pre></div><p><code>loadEEPROM</code> 从EEPROM中读取数据，并将超出范围的数据校正为默认值</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">attachInterrupt(0, pin2IRQ, FALLING);  <span style="font-style:italic">// activate IRQ at falling edge mode
+</span><span style="font-style:italic"></span>
+<span style="">void</span> pin2IRQ() {  <span style="font-style:italic">// Pin2(int.0) interrupr handler
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// Pin8,9,10,11 buttons are bundled with diodes and connected to Pin2.
+</span><span style="font-style:italic"></span>    <span style="font-style:italic">// So, if any button is pressed, this routine will start.
+</span><span style="font-style:italic"></span>    <span style="">int</span> x;  <span style="font-style:italic">// Port information holding variable
+</span><span style="font-style:italic"></span>
+    x = PINB;  <span style="font-style:italic">// copy port B status
+</span><span style="font-style:italic"></span>
+    <span style="font-weight:bold">if</span> ((x &amp; 0x07) != 0x07) {  <span style="font-style:italic">// if bottom 3bit is not all Hi(any wer pressed)
+</span><span style="font-style:italic"></span>        saveTimer = 5000;      <span style="font-style:italic">// set EEPROM save timer to 5 secnd
+</span><span style="font-style:italic"></span>        switchPushed = true;   <span style="font-style:italic">// switch pushed falag ON
+</span><span style="font-style:italic"></span>    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x01) == 0) {  <span style="font-style:italic">// if select button(Pin8) pushed,
+</span><span style="font-style:italic"></span>        scopeP++;           <span style="font-style:italic">// forward scope position
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (scopeP &gt; 2) {   <span style="font-style:italic">// if upper limit
+</span><span style="font-style:italic"></span>            scopeP = 0;     <span style="font-style:italic">// move to start position
+</span><span style="font-style:italic"></span>        }
+    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x02) == 0) {     <span style="font-style:italic">// if UP button(Pin9) pusshed, and
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (scopeP == 0) {     <span style="font-style:italic">// scoped vertical range
+</span><span style="font-style:italic"></span>            vRange++;          <span style="font-style:italic">// V-range up !
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (vRange &gt; 9) {  <span style="font-style:italic">// if upper limit
+</span><span style="font-style:italic"></span>                vRange = 9;    <span style="font-style:italic">// stay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 1) {      <span style="font-style:italic">// if scoped hrizontal range
+</span><span style="font-style:italic"></span>            hRange++;           <span style="font-style:italic">// H-range up !
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (hRange &gt; 11) {  <span style="font-style:italic">// if upper limit
+</span><span style="font-style:italic"></span>                hRange = 11;    <span style="font-style:italic">// stay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 2) {  <span style="font-style:italic">// if scoped trigger porality
+</span><span style="font-style:italic"></span>            trigD = 0;      <span style="font-style:italic">// set trigger porality to +
+</span><span style="font-style:italic"></span>        }
+    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x04) == 0) {     <span style="font-style:italic">// if DOWN button(Pin10) pusshed, and
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (scopeP == 0) {     <span style="font-style:italic">// scoped vertical range
+</span><span style="font-style:italic"></span>            vRange--;          <span style="font-style:italic">// V-range DOWN
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (vRange &lt; 2) {  <span style="font-style:italic">// if bottom (Auto5V Auto50V have deleted）
+</span><span style="font-style:italic"></span>                vRange = 2;    <span style="font-style:italic">// stay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 1) {     <span style="font-style:italic">// if scoped hrizontal range
+</span><span style="font-style:italic"></span>            hRange--;          <span style="font-style:italic">// H-range DOWN
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (hRange &lt; 0) {  <span style="font-style:italic">// if bottom
+</span><span style="font-style:italic"></span>                hRange = 0;    <span style="font-style:italic">// satay as is
+</span><span style="font-style:italic"></span>            }
+        }
+        <span style="font-weight:bold">if</span> (scopeP == 2) {  <span style="font-style:italic">// if scoped trigger porality
+</span><span style="font-style:italic"></span>            trigD = 1;      <span style="font-style:italic">// set trigger porality to -
+</span><span style="font-style:italic"></span>        }
+    }
+
+    <span style="font-weight:bold">if</span> ((x &amp; 0x08) == 0) {  <span style="font-style:italic">// if HOLD button(pin11) pushed
+</span><span style="font-style:italic"></span>        hold = !hold;       <span style="font-style:italic">// revers the flag
+</span><span style="font-style:italic"></span>    }
+}
+</code></pre></div><p><code>attachInterrupt()</code> 通过下降沿模式激活中断调用<code>pin2IRQ()</code>函数来满足各个按钮的功能</p>
+<p><code>startScreen()</code> 初始界面绘制</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> loop() {
+    setInputOffset();        <span style="font-style:italic">// coupling mode set(AC/DC)
+</span><span style="font-style:italic"></span>    setConditions();         <span style="font-style:italic">// set measurment conditions
+</span><span style="font-style:italic"></span>    digitalWrite(13, HIGH);  <span style="font-style:italic">// flash LED
+</span><span style="font-style:italic"></span>    readWave();              <span style="font-style:italic">// read wave form and store into buffer memory
+</span><span style="font-style:italic"></span>    digitalWrite(13, LOW);   <span style="font-style:italic">// stop LED
+</span><span style="font-style:italic"></span>    setConditions();         <span style="font-style:italic">// set measurment conditions again (reflect change during measure)
+</span><span style="font-style:italic"></span>    dataAnalize();           <span style="font-style:italic">// analize data
+</span><span style="font-style:italic"></span>    writeCommonImage();      <span style="font-style:italic">// write fixed screen image (2.6ms)
+</span><span style="font-style:italic"></span>    plotData();              <span style="font-style:italic">// plot waveform (10-18ms)
+</span><span style="font-style:italic"></span>    dispInf();               <span style="font-style:italic">// display information (6.5-8.5ms)
+</span><span style="font-style:italic"></span>    oled.display();          <span style="font-style:italic">// send screen buffer to OLED (37ms)
+</span><span style="font-style:italic"></span>    saveEEPROM();            <span style="font-style:italic">// save settings to EEPROM if necessary
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">while</span> (hold == true) {   <span style="font-style:italic">// wait if Hold flag ON
+</span><span style="font-style:italic"></span>        dispHold();
+        <span style="font-weight:bold">if</span> (inMode &gt; 0) {         <span style="font-style:italic">// if not DC mode,
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> (acZero() == 1) {  <span style="font-style:italic">// if offset adj. executed
+</span><span style="font-style:italic"></span>                scopeP = 0;       <span style="font-style:italic">// Restore the scope position of select to vertical sensitivity
+</span><span style="font-style:italic"></span>                hold = false;     <span style="font-style:italic">// cancel hold
+</span><span style="font-style:italic"></span>            }
+            delay(10);
+        }  <span style="font-style:italic">//
+</span><span style="font-style:italic"></span>    }
+}
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> dataAnalize() {  <span style="font-style:italic">// get various information from wave form
+</span><span style="font-style:italic"></span>    <span style="">long</span> d;
+    <span style="">long</span> sum = 0;
+
+    <span style="font-style:italic">// search max and min value
+</span><span style="font-style:italic"></span>    dataMin = 1023;                       <span style="font-style:italic">// min value initialize to big number
+</span><span style="font-style:italic"></span>    dataMax = 0;                          <span style="font-style:italic">// max value initialize to small number
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {  <span style="font-style:italic">// serach max min value
+</span><span style="font-style:italic"></span>        d = waveBuff[i];
+        sum = sum + d;
+        <span style="font-weight:bold">if</span> (d &lt; dataMin) {  <span style="font-style:italic">// update min
+</span><span style="font-style:italic"></span>            dataMin = d;
+        }
+        <span style="font-weight:bold">if</span> (d &gt; dataMax) {  <span style="font-style:italic">// updata max
+</span><span style="font-style:italic"></span>            dataMax = d;
+        }
+    }
+
+    <span style="font-style:italic">// calculate average
+</span><span style="font-style:italic"></span>    dataAve = (sum + 10) / 20;  <span style="font-style:italic">// Average value calculation (calculated by 10 times to improve accuracy)
+</span><span style="font-style:italic"></span>
+    <span style="font-style:italic">// rms value calc.
+</span><span style="font-style:italic"></span>    sum = 0;
+    <span style="font-weight:bold">for</span> (<span style="">int</span> i = 0; i &lt; REC_LENG; i++) {       <span style="font-style:italic">// to all buffer
+</span><span style="font-style:italic"></span>        d = waveBuff[i] - (dataAve + 5) / 10;  <span style="font-style:italic">// Calculate with a raw value to prevent overflow (no more than 10 times)
+</span><span style="font-style:italic"></span>        sum += d * d;                          <span style="font-style:italic">// Square sum integral
+</span><span style="font-style:italic"></span>    }
+
+    dataRms = sqrt(sum / REC_LENG);  <span style="font-style:italic">// get rms value (10 times)
+</span><span style="font-style:italic"></span>
+    <span style="font-style:italic">// Trigger position search
+</span><span style="font-style:italic"></span>    <span style="font-weight:bold">for</span> (trigP = ((REC_LENG / 2) - 51); trigP &lt; ((REC_LENG / 2) + 50); trigP++) {  <span style="font-style:italic">// Find the points that straddle the median at the center ± 50 of the data range
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (trigD == 0) {                                                          <span style="font-style:italic">// if trigger direction is positive
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((waveBuff[trigP - 1] &lt; (dataMax + dataMin) / 2) &amp;&amp; (waveBuff[trigP] &gt;= (dataMax + dataMin) / 2)) {
+                <span style="font-weight:bold">break</span>;  <span style="font-style:italic">// positive trigger position found !
+</span><span style="font-style:italic"></span>            }
+        } <span style="font-weight:bold">else</span> {  <span style="font-style:italic">// trigger direction is negative
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((waveBuff[trigP - 1] &gt; (dataMax + dataMin) / 2) &amp;&amp; (waveBuff[trigP] &lt;= (dataMax + dataMin) / 2)) {
+                <span style="font-weight:bold">break</span>;  <span style="font-style:italic">// negative trigger poshition found !
+</span><span style="font-style:italic"></span>            }
+        }
+    }
+    trigSync = true;
+    <span style="font-weight:bold">if</span> (trigP &gt;= ((REC_LENG / 2) + 50)) {  <span style="font-style:italic">// If the trigger is not found in range
+</span><span style="font-style:italic"></span>        trigP = (REC_LENG / 2);            <span style="font-style:italic">// Set it to the center for the time being
+</span><span style="font-style:italic"></span>        trigSync = false;                  <span style="font-style:italic">// set Unsync display flag
+</span><span style="font-style:italic"></span>    }
+    <span style="font-weight:bold">if</span> ((dataMax - dataMin) &lt;= MIN_TRIG_SWING) {  <span style="font-style:italic">// amplitude of the waveform smaller than the specified value
+</span><span style="font-style:italic"></span>        trigSync = false;                         <span style="font-style:italic">// set Unsync display flag
+</span><span style="font-style:italic"></span>    }
+    freqDuty();
+}
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">void</span> freqDuty() {        <span style="font-style:italic">// detect frequency and duty cycle value from waveform data
+</span><span style="font-style:italic"></span>    <span style="">int</span> swingCenter;     <span style="font-style:italic">// center of wave (half of p-p)
+</span><span style="font-style:italic"></span>    <span style="">float</span> p0 = 0;        <span style="font-style:italic">// 1-st posi edge
+</span><span style="font-style:italic"></span>    <span style="">float</span> p1 = 0;        <span style="font-style:italic">// total length of cycles
+</span><span style="font-style:italic"></span>    <span style="">float</span> p2 = 0;        <span style="font-style:italic">// total length of pulse high time
+</span><span style="font-style:italic"></span>    <span style="">float</span> pFine = 0;     <span style="font-style:italic">// fine position (0-1.0)
+</span><span style="font-style:italic"></span>    <span style="">float</span> lastPosiEdge;  <span style="font-style:italic">// last positive edge position
+</span><span style="font-style:italic"></span>
+    <span style="">float</span> pPeriod;  <span style="font-style:italic">// pulse period
+</span><span style="font-style:italic"></span>    <span style="">float</span> pWidth;   <span style="font-style:italic">// pulse width
+</span><span style="font-style:italic"></span>
+    <span style="">int</span> p1Count = 0;  <span style="font-style:italic">// wave cycle count
+</span><span style="font-style:italic"></span>    <span style="">int</span> p2Count = 0;  <span style="font-style:italic">// High time count
+</span><span style="font-style:italic"></span>
+    boolean a0Detected = false;
+    <span style="font-style:italic">//  boolean b0Detected = false;
+</span><span style="font-style:italic"></span>    boolean posiSerch = true;  <span style="font-style:italic">// true when serching posi edge
+</span><span style="font-style:italic"></span>
+    swingCenter = (3 * (dataMin + dataMax)) / 2;  <span style="font-style:italic">// calculate wave center value
+</span><span style="font-style:italic"></span>
+    <span style="font-weight:bold">for</span> (<span style="">int</span> i = 1; i &lt; REC_LENG - 2; i++) {                                                                       <span style="font-style:italic">// scan all over the buffer
+</span><span style="font-style:italic"></span>        <span style="font-weight:bold">if</span> (posiSerch == true) {                                                                                   <span style="font-style:italic">// posi slope (frequency serch)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((sum3(i) &lt;= swingCenter) &amp;&amp; (sum3(i + 1) &gt; swingCenter)) {                                         <span style="font-style:italic">// if across the center when rising (+-3data used to eliminate noize)
+</span><span style="font-style:italic"></span>                pFine = (<span style="">float</span>)(swingCenter - sum3(i)) / ((swingCenter - sum3(i)) + (sum3(i + 1) - swingCenter));  <span style="font-style:italic">// fine cross point calc.
+</span><span style="font-style:italic"></span>                <span style="font-weight:bold">if</span> (a0Detected == false) {                                                                         <span style="font-style:italic">// if 1-st cross
+</span><span style="font-style:italic"></span>                    a0Detected = true;                                                                             <span style="font-style:italic">// set find flag
+</span><span style="font-style:italic"></span>                    p0 = i + pFine;                                                                                <span style="font-style:italic">// save this position as startposition
+</span><span style="font-style:italic"></span>                } <span style="font-weight:bold">else</span> {
+                    p1 = i + pFine - p0;  <span style="font-style:italic">// record length (length of n*cycle time)
+</span><span style="font-style:italic"></span>                    p1Count++;
+                }
+                lastPosiEdge = i + pFine;  <span style="font-style:italic">// record location for Pw calcration
+</span><span style="font-style:italic"></span>                posiSerch = false;
+            }
+        } <span style="font-weight:bold">else</span> {                                                            <span style="font-style:italic">// nega slope serch (duration serch)
+</span><span style="font-style:italic"></span>            <span style="font-weight:bold">if</span> ((sum3(i) &gt;= swingCenter) &amp;&amp; (sum3(i + 1) &lt; swingCenter)) {  <span style="font-style:italic">// if across the center when falling (+-3data used to eliminate noize)
+</span><span style="font-style:italic"></span>                pFine = (<span style="">float</span>)(sum3(i) - swingCenter) / ((sum3(i) - swingCenter) + (swingCenter - sum3(i + 1)));
+                <span style="font-weight:bold">if</span> (a0Detected == true) {
+                    p2 = p2 + (i + pFine - lastPosiEdge);  <span style="font-style:italic">// calucurate pulse width and accumurate it
+</span><span style="font-style:italic"></span>                    p2Count++;
+                }
+                posiSerch = true;
+            }
+        }
+    }
+
+    pPeriod = p1 / p1Count;  <span style="font-style:italic">// pulse period
+</span><span style="font-style:italic"></span>    pWidth = p2 / p2Count;   <span style="font-style:italic">// palse width
+</span><span style="font-style:italic"></span>
+    waveFreq = 1.0 / ((pgm_read_float(hRangeValue + hRange) * pPeriod) / 25.0);  <span style="font-style:italic">// frequency
+</span><span style="font-style:italic"></span>    waveDuty = 100.0 * pWidth / pPeriod;                                         <span style="font-style:italic">// duty ratio
+</span><span style="font-style:italic"></span>}
+</code></pre></div><div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="">int</span> sum3(<span style="">int</span> k) {  <span style="font-style:italic">// Sum of before and after and own value
+</span><span style="font-style:italic"></span>    <span style="">int</span> m = waveBuff[k - 1] + waveBuff[k] + waveBuff[k + 1];
+    <span style="font-weight:bold">return</span> m;
+}
+</code></pre></div><p>注释已经很清晰明了,故不再过多阐述</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      
+
+    </main>
+
+    
+      
+      <script src="/js/coder.min.235666b114443867d43eeb5799d51f6252965e5163f338285e113fa381d3d27e.js" integrity="sha256-I1ZmsRREOGfUPutXmdUfYlKWXlFj8zgoXhE/o4HT0n4="></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </body>
+
+</html>
